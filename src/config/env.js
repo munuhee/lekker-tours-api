@@ -9,7 +9,7 @@ function required(name, fallback) {
   const value = process.env[name] ?? fallback;
   if (value === undefined || value === '') {
     throw new Error(
-      `Missing required environment variable ${name}. Copy api/.env.example to api/.env and fill it in.`
+      `Missing required environment variable ${name}. Copy .env.example to .env and fill it in.`
     );
   }
   return value;
@@ -22,6 +22,14 @@ export const env = {
 
   mongoUri: required('MONGODB_URI', 'mongodb://127.0.0.1:27017/lekker_tours'),
   webOrigin: required('WEB_ORIGIN', 'http://localhost:3000'),
+
+  // This service's own publicly reachable origin. It is baked into uploaded
+  // image URLs, which are stored on content documents and rendered by the
+  // public site — so in production it must be the deployed hostname, not
+  // localhost, or every uploaded image breaks.
+  publicApiUrl: (
+    process.env.PUBLIC_API_URL ?? `http://localhost:${Number(process.env.PORT ?? 4000)}`
+  ).replace(/\/+$/, ''),
 
   jwtSecret: required('JWT_SECRET'),
   jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? '7d',

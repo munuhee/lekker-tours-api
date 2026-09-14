@@ -48,6 +48,7 @@ Copy `.env.example` to `.env`. `.env` is gitignored and must never be committed.
 | `PORT` | API port. Default `4000`. |
 | `MONGODB_URI` | Mongo connection string. |
 | `WEB_ORIGIN` | Origin of the web app. Used for the CORS allowlist **and** as the target for revalidation callbacks. |
+| `PUBLIC_API_URL` | This service's own public origin. Baked into uploaded-image URLs. Defaults to `http://localhost:{PORT}`. **Must be the real hostname in production** — see below. |
 | `JWT_SECRET` | Signs admin JWTs. **Required** — the app refuses to boot without it. |
 | `JWT_EXPIRES_IN` | Token lifetime. Default `7d`. |
 | `REVALIDATE_SECRET` | Shared secret for the webhook to the web app. Must match the value in `lekker-tours-web`. If empty, revalidation is skipped entirely. |
@@ -129,6 +130,19 @@ Everything with a public URL carries a `draft`/`published` status.
   this service.
 - `uploads/` needs **persistent storage**. On an ephemeral filesystem (most PaaS containers) the
   directory is wiped on each deploy — move uploads to object storage instead.
+- **Set `PUBLIC_API_URL` to the deployed hostname.** When an admin uploads an image, the absolute
+  URL returned by `POST /api/admin/uploads` is *stored on the content document* and later rendered
+  by the public site. If this is left at localhost in production, every newly uploaded image is
+  saved with an unreachable URL — and fixing it afterwards means rewriting stored documents, not
+  just changing config. Whatever you set here must also be allowed by the web app's
+  `images.remotePatterns` (it derives that from `NEXT_PUBLIC_API_URL`, so keep the two identical).
+
+## Continuous integration
+
+[.github/workflows/ci.yml](.github/workflows/ci.yml) runs on push and PR: `npm ci`, a
+`node --check` syntax pass over every tracked `.js`, then it boots the app against a real MongoDB
+service container, seeds it, and asserts `/api/tours` answers. There is no unit-test suite yet, so
+this is the safety net — a broken import or a bad route shape fails the build.
 
 ---
 
