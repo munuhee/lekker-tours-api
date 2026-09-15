@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { BlogPost } from '../models/BlogPost.js';
+import { prisma } from '../config/db.js';
 import { createCrudControllers } from '../services/crud.factory.js';
 import { validate } from '../middleware/validate.js';
 import { requireAdmin } from '../middleware/auth.js';
@@ -13,12 +13,13 @@ import {
 } from '../validators/content.validator.js';
 
 const ctrl = createCrudControllers({
-  Model: BlogPost,
+  delegate: prisma.blogPost,
   label: 'post',
-  defaultSort: { publishedAt: -1 },
+  defaultSort: [{ publishedAt: 'desc' }],
   buildFilter: (q) => {
     const f = {};
-    if (q.tag) f.tags = q.tag.toLowerCase();
+    // `tags` is a Postgres text[]; `has` is the array-contains test.
+    if (q.tag) f.tags = { has: q.tag.toLowerCase() };
     if (q.featured) f.featured = q.featured === 'true';
     return f;
   },

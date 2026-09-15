@@ -1,0 +1,305 @@
+// Lekker Tours — Postgres schema.
+//
+// Ported from the original Mongoose models. Two rules shaped the translation:
+//
+// 1. Anything the public site queries, filters or sorts by is a real column
+//    with a real type (and an index where the old schema had one).
+// 2. Anything only ever read and written as a whole blob — an itinerary, a
+//    gallery, an SEO block — stays JSON. Splitting those into child tables
+//    would buy nothing: nothing filters on them, and the admin UI PUTs the
+//    entire array back on every save.
+//
+// Primary keys are UUIDs. The API serializes each row with `_id` AND `id` both
+// set to that UUID, because the web app (a separate repo) types `_id` on every
+// interface. See src/utils/serialize.js.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Prisma 7 no longer accepts `url` here — the connection string is supplied by
+// prisma.config.ts for the CLI, and by the adapter in src/config/db.js for the
+// client at runtime.
+datasource db {
+  provider = "postgresql"
+}
+
+enum Status {
+  draft
+  published
+}
+
+enum Country {
+  Kenya
+  Tanzania
+  Uganda
+  Rwanda
+  Zanzibar
+}
+
+/// Was a Mongoose discriminator key. Now a plain column: the subtype-specific
+/// fields below are nullable and only meaningful for their own category.
+enum TourCategory {
+  SafariExpedition
+  WeekendEscape
+}
+
+enum Difficulty {
+  easy
+  moderate
+  challenging
+}
+
+enum FaqGroup {
+  general
+  booking
+  travel
+  payment
+}
+
+enum EnquiryType {
+  contact
+  booking
+}
+
+enum EnquiryStatus {
+  new
+  read
+  responded
+  archived
+}
+
+enum AdminRole {
+  admin
+  editor
+}
+
+model Tour {
+  id          String       @id @default(uuid()) @db.Uuid
+  title       String       @db.VarChar(140)
+  slug        String       @unique
+  summary     String       @db.VarChar(300)
+  description String
+
+  priceFrom Decimal @db.Decimal(12, 2)
+  currency  String  @default("KES") @db.VarChar(3)
+
+  durationDays   Int
+  durationNights Int
+  groupSizeMax   Int        @default(12)
+  difficulty     Difficulty @default(moderate)
+
+  rating      Decimal @default(4.8) @db.Decimal(2, 1)
+  reviewCount Int     @default(0)
+
+  destinationId String?      @map("destination_id") @db.Uuid
+  destination   Destination? @relation(fields: [destinationId], references: [id], onDelete: SetNull)
+
+  countries Country[]
+
+  highlights String[]
+  inclusions String[]
+  exclusions String[]
+
+  /// Array of { day, title, description, activities[], meals[], accommodation }.
+  itinerary Json @default("[]")
+
+  /// { url, alt, caption? }
+  heroImage Json
+  /// Array of the same image shape.
+  gallery   Json @default("[]")
+
+  featured    Boolean      @default(false)
+  bestSelling Boolean      @default(false)
+  status      Status       @default(draft)
+  order       Int          @default(0)
+  category    TourCategory
+
+  /// { metaTitle?, metaDescription?, ogImage? }
+  seo Json?
+
+  // --- SafariExpedition only ---
+  parks                   String[]
+  gameDriveCount          Int?
+  conservancyFeesIncluded Boolean?
+
+  // --- WeekendEscape only ---
+  departsFrom  String?
+  weekendDates DateTime[] @db.Date
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  enquiries Enquiry[]
+
+  @@index([status, featured, order])
+  @@index([category, status])
+  @@index([destinationId])
+  @@map("tours")
+}
+
+model Destination {
+  id           String  @id @default(uuid()) @db.Uuid
+  name         String  @db.VarChar(120)
+  slug         String  @unique
+  country      Country
+  tagline      String? @db.VarChar(180)
+  categoryLabel String @default("Destination") @map("category_label")
+  overview     String
+
+  heroImage Json @map("hero_image")
+  cardImage Json @map("card_image")
+
+  highlights String[]
+
+  /// { months: string[], note?: string }
+  bestTime Json? @map("best_time")
+  /// Array of { name, slug, blurb?, image?, bestTime?, highlights[] }.
+  /// Anchor targets on the destination page; never queried individually.
+  parks    Json  @default("[]")
+
+  featured Boolean @default(false)
+  status   Status  @default(draft)
+  order    Int     @default(0)
+  seo      Json?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  tours     Tour[]
+
+  @@index([country, status, order])
+  @@map("destinations")
+}
+
+model BlogPost {
+  id      String @id @default(uuid()) @db.Uuid
+  title   String @db.VarChar(160)
+  slug    String @unique
+  excerpt String @db.VarChar(300)
+  content String
+
+  coverImage Json @map("cover_image")
+  /// { name, avatar? }
+  author     Json @default("{\"name\":\"Lekker Tours\"}")
+
+  tags           String[]
+  readingMinutes Int      @default(4) @map("reading_minutes")
+  publishedAt    DateTime @default(now()) @map("published_at")
+
+  featured Boolean @default(false)
+  status   Status  @default(draft)
+  seo      Json?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([status, publishedAt])
+  @@index([tags], type: Gin)
+  @@map("blog_posts")
+}
+
+model Testimonial {
+  id             String  @id @default(uuid()) @db.Uuid
+  authorName     String  @map("author_name") @db.VarChar(120)
+  authorLocation String? @map("author_location") @db.VarChar(120)
+  /// { url?, alt? }
+  avatar         Json?
+  quote          String  @db.VarChar(600)
+  rating         Int     @default(5)
+
+  tourName    String?   @map("tour_name")
+  travelledOn DateTime? @map("travelled_on") @db.Date
+
+  featured Boolean @default(false)
+  status   Status  @default(draft)
+  order    Int     @default(0)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([status, featured, order])
+  @@map("testimonials")
+}
+
+/// Named `Faq`, not `FAQ`: Prisma derives the client delegate by lowercasing
+/// the first letter only, so `model FAQ` would be reached as `prisma.fAQ`.
+model Faq {
+  id       String   @id @default(uuid()) @db.Uuid
+  question String   @unique @db.VarChar(240)
+  answer   String
+  group    FaqGroup @default(general)
+  order    Int      @default(0)
+  status   Status   @default(draft)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([status, group, order])
+  @@map("faqs")
+}
+
+model Enquiry {
+  id    String      @id @default(uuid()) @db.Uuid
+  type  EnquiryType
+  name  String      @db.VarChar(120)
+  email String
+  phone String?     @db.VarChar(40)
+
+  // Contact-form fields.
+  expeditionInterest String?  @map("expedition_interest")
+  budgetUSD          Decimal? @map("budget_usd") @db.Decimal(12, 2)
+  message            String?
+
+  // Booking-form fields.
+  tourId     String?   @map("tour_id") @db.Uuid
+  tour       Tour?     @relation(fields: [tourId], references: [id], onDelete: SetNull)
+  tourTitle  String?   @map("tour_title")
+  travelDate DateTime? @map("travel_date") @db.Date
+  /// { adults, children, infants } — totalGuests is computed on serialize.
+  guests     Json?
+
+  status     EnquiryStatus @default(new)
+  adminNotes String?       @map("admin_notes")
+  source     String        @default("website")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([status, createdAt])
+  @@index([type, createdAt])
+  @@map("enquiries")
+}
+
+/// Singleton. The `key` column is unique and always 'primary', which is what
+/// makes the upsert in SiteSettings.getSingleton() safe to call concurrently.
+model SiteSettings {
+  id  String @id @default(uuid()) @db.Uuid
+  key String @unique @default("primary")
+
+  hero        Json
+  values      Json @default("[]")
+  contact     Json
+  socials     Json @default("{}")
+  newsletter  Json
+  footerBlurb String @map("footer_blurb")
+  seo         Json
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("site_settings")
+}
+
+model AdminUser {
+  id           String    @id @default(uuid()) @db.Uuid
+  email        String    @unique
+  /// bcrypt digest. Never selected by default — see adminUsers.findByEmail().
+  passwordHash String    @map("password_hash")
+  name         String    @default("Administrator")
+  role         AdminRole @default(admin)
+  lastLoginAt  DateTime? @map("last_login_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("admin_users")
+}

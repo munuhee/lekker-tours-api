@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Testimonial } from '../models/Testimonial.js';
+import { prisma } from '../config/db.js';
 import { createCrudControllers } from '../services/crud.factory.js';
 import { validate } from '../middleware/validate.js';
 import { requireAdmin } from '../middleware/auth.js';
@@ -13,11 +13,11 @@ import {
 } from '../validators/content.validator.js';
 
 const ctrl = createCrudControllers({
-  Model: Testimonial,
+  delegate: prisma.testimonial,
   label: 'testimonial',
   slugField: null, // testimonials have no public URL of their own
   titleField: null,
-  defaultSort: { featured: -1, order: 1, createdAt: -1 },
+  defaultSort: [{ featured: 'desc' }, { order: 'asc' }, { createdAt: 'desc' }],
   buildFilter: (q) => (q.featured ? { featured: q.featured === 'true' } : {}),
   revalidateTags: () => ['testimonials', 'home'],
 });

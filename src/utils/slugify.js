@@ -15,19 +15,28 @@ export function slugify(input) {
 }
 
 /**
- * Ensures uniqueness against a Mongoose model, appending -2, -3, … as needed.
+ * Ensures uniqueness against a Prisma delegate, appending -2, -3, … as needed.
  * `excludeId` lets an update keep its own slug.
+ *
+ *   await uniqueSlug(prisma.tour, 'Big Five Express')
+ *
+ * This is still a check-then-write race: two concurrent creates can settle on
+ * the same candidate. The `slug` columns carry UNIQUE constraints, so the loser
+ * gets a P2002 that the error middleware turns into a 409 rather than a
+ * duplicate row — same guarantee the Mongo unique index gave.
  */
-export async function uniqueSlug(Model, source, excludeId = null) {
+export async function uniqueSlug(delegate, source, excludeId = null) {
   const base = slugify(source) || 'item';
   let candidate = base;
   let suffix = 1;
 
   for (;;) {
-    const query = { slug: candidate };
-    if (excludeId) query._id = { $ne: excludeId };
-    const clash = await Model.exists(query);
+    const where = { slug: candidate };
+    if (excludeId) where.NOT = { id: excludeId };
+
+    const clash = await delegate.findFirst({ where, select: { id: true } });
     if (!clash) return candidate;
+
     suffix += 1;
     candidate = `${base}-${suffix}`;
   }

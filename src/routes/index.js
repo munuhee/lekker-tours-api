@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import mongoose from 'mongoose';
 import { sendData } from '../utils/respond.js';
+import { databaseStatus } from '../config/db.js';
 
 import authRoutes from './auth.js';
 import tourRoutes from './tours.js';
@@ -14,12 +14,11 @@ import uploadRoutes from './uploads.js';
 
 const router = Router();
 
-router.get('/health', (req, res) => {
-  const states = ['disconnected', 'connected', 'connecting', 'disconnecting'];
+router.get('/health', async (req, res) => {
   sendData(res, {
     status: 'ok',
     uptimeSeconds: Math.round(process.uptime()),
-    database: states[mongoose.connection.readyState] ?? 'unknown',
+    database: await databaseStatus(),
     timestamp: new Date().toISOString(),
   });
 });

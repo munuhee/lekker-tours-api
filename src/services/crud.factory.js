@@ -2,6 +2,7 @@ import { ApiError } from '../utils/ApiError.js';
 import { uniqueSlug } from '../utils/slugify.js';
 import { sendData, buildPageMeta } from '../utils/respond.js';
 import { revalidate } from '../utils/revalidate.js';
+import { serialize, serializeMany } from '../utils/serialize.js';
 
 /**
  * Destinations, blog posts, testimonials and FAQs share the same shape:
@@ -9,32 +10,44 @@ import { revalidate } from '../utils/revalidate.js';
  * and edited through identical CRUD verbs. Rather than four near-identical
  * service+controller pairs, they are generated from one description.
  *
- * Tours are deliberately NOT built this way — discriminators, related-tour
- * lookups and price filtering earn their own hand-written service.
+ * Tours are deliberately NOT built this way — the category subtype fields,
+ * related-tour lookups and price filtering earn their own hand-written service.
+ *
+ * `defaultSort` and the objects returned by `buildFilter` are Prisma clauses,
+ * not the old Mongo ones: `[{ order: 'asc' }]` rather than `{ order: 1 }`, and
+ * `{ country: 'Kenya' }` passes straight into `where`.
  */
 export function createCrudControllers({
-  Model,
+  delegate,
   label,
   slugField = 'slug',
   titleField = 'title',
   buildFilter = () => ({}),
-  defaultSort = { order: 1, createdAt: -1 },
-  populate = null,
+  defaultSort = [{ order: 'asc' }, { createdAt: 'desc' }],
+  include = null,
+  serializer = serialize,
   revalidateTags = () => [],
 }) {
   const notFound = () => ApiError.notFound(`We could not find that ${label}.`);
 
   async function list(query, { publishedOnly }) {
     const { page, limit } = query;
-    const filter = { ...buildFilter(query) };
-    if (publishedOnly) filter.status = 'published';
-    else if (query.status) filter.status = query.status;
+    const where = { ...buildFilter(query) };
+    if (publishedOnly) where.status = 'published';
+    else if (query.status) where.status = query.status;
 
-    let q = Model.find(filter).sort(defaultSort).skip((page - 1) * limit).limit(limit);
-    if (populate) q = q.populate(populate);
+    const [items, total] = await Promise.all([
+      delegate.findMany({
+        where,
+        orderBy: defaultSort,
+        skip: (page - 1) * limit,
+        take: limit,
+        ...(include ? { include } : {}),
+      }),
+      delegate.count({ where }),
+    ]);
 
-    const [items, total] = await Promise.all([q.lean({ virtuals: true }), Model.countDocuments(filter)]);
-    return { items, total, page, limit };
+    return { items: serializeMany(items, serializer), total, page, limit };
   }
 
   return {
@@ -46,11 +59,12 @@ export function createCrudControllers({
     },
 
     async getPublicBySlug(req, res) {
-      let q = Model.findOne({ [slugField]: req.params.slug, status: 'published' });
-      if (populate) q = q.populate(populate);
-      const doc = await q.lean({ virtuals: true });
+      const doc = await delegate.findFirst({
+        where: { [slugField]: req.params.slug, status: 'published' },
+        ...(include ? { include } : {}),
+      });
       if (!doc) throw notFound();
-      sendData(res, doc);
+      sendData(res, serializer(doc));
     },
 
     /* ---------- admin ---------- */
@@ -61,53 +75,51 @@ export function createCrudControllers({
     },
 
     async getAdminById(req, res) {
-      const doc = await Model.findById(req.params.id).lean({ virtuals: true });
+      const doc = await delegate.findUnique({ where: { id: req.params.id } });
       if (!doc) throw notFound();
-      sendData(res, doc);
+      sendData(res, serializer(doc));
     },
 
     async create(req, res) {
       const payload = { ...req.body };
       if (slugField && titleField && payload[titleField]) {
-        payload[slugField] = await uniqueSlug(Model, payload[slugField] || payload[titleField]);
+        payload[slugField] = await uniqueSlug(delegate, payload[slugField] || payload[titleField]);
       }
-      const doc = await Model.create(payload);
+      const doc = await delegate.create({ data: payload });
       await revalidate(revalidateTags(doc));
-      sendData(res, doc.toJSON(), { status: 201 });
+      sendData(res, serializer(doc), { status: 201 });
     },
 
     async update(req, res) {
-      const doc = await Model.findById(req.params.id);
-      if (!doc) throw notFound();
+      const existing = await delegate.findUnique({ where: { id: req.params.id } });
+      if (!existing) throw notFound();
 
       const payload = { ...req.body };
-      if (slugField && payload[slugField] && payload[slugField] !== doc[slugField]) {
-        payload[slugField] = await uniqueSlug(Model, payload[slugField], doc._id);
-      } else {
+      if (slugField && payload[slugField] && payload[slugField] !== existing[slugField]) {
+        payload[slugField] = await uniqueSlug(delegate, payload[slugField], existing.id);
+      } else if (slugField) {
         // Renaming must not silently break a published URL.
         delete payload[slugField];
       }
 
-      Object.assign(doc, payload);
-      await doc.save();
+      const doc = await delegate.update({ where: { id: existing.id }, data: payload });
       await revalidate(revalidateTags(doc));
-      sendData(res, doc.toJSON());
+      sendData(res, serializer(doc));
     },
 
     async updateStatus(req, res) {
-      const doc = await Model.findByIdAndUpdate(
-        req.params.id,
-        { status: req.body.status },
-        { returnDocument: 'after', runValidators: true }
-      );
-      if (!doc) throw notFound();
+      // update() throws P2025 when the row is gone; the error middleware maps
+      // that to a 404, so no separate existence check is needed.
+      const doc = await delegate.update({
+        where: { id: req.params.id },
+        data: { status: req.body.status },
+      });
       await revalidate(revalidateTags(doc));
-      sendData(res, doc.toJSON());
+      sendData(res, serializer(doc));
     },
 
     async remove(req, res) {
-      const doc = await Model.findByIdAndDelete(req.params.id);
-      if (!doc) throw notFound();
+      const doc = await delegate.delete({ where: { id: req.params.id } });
       await revalidate(revalidateTags(doc));
       sendData(res, { id: req.params.id });
     },

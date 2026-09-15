@@ -1,11 +1,12 @@
 import { Router } from 'express';
-import { Destination } from '../models/Destination.js';
+import { prisma } from '../config/db.js';
 import { createCrudControllers } from '../services/crud.factory.js';
 import { validate } from '../middleware/validate.js';
 import { requireAdmin } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { idParam, slugParam } from '../validators/common.js';
 import { statusBodySchema } from '../validators/tour.validator.js';
+import { serializeDestination } from '../utils/serialize.js';
 import {
   createDestinationSchema,
   updateDestinationSchema,
@@ -13,10 +14,12 @@ import {
 } from '../validators/destination.validator.js';
 
 const ctrl = createCrudControllers({
-  Model: Destination,
+  delegate: prisma.destination,
   label: 'destination',
   titleField: 'name',
-  defaultSort: { order: 1, name: 1 },
+  defaultSort: [{ order: 'asc' }, { name: 'asc' }],
+  // parkCount was a Mongoose virtual; the web app renders it on every card.
+  serializer: serializeDestination,
   buildFilter: (q) => {
     const f = {};
     if (q.country) f.country = q.country;

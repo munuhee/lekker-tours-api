@@ -20,7 +20,10 @@ export const env = {
   isProduction: process.env.NODE_ENV === 'production',
   port: Number(process.env.PORT ?? 4000),
 
-  mongoUri: required('MONGODB_URI', 'mongodb://127.0.0.1:27017/lekker_tours'),
+  databaseUrl: required(
+    'DATABASE_URL',
+    'postgresql://postgres:postgres@127.0.0.1:5432/lekker_tours?schema=public'
+  ),
   webOrigin: required('WEB_ORIGIN', 'http://localhost:3000'),
 
   // This service's own publicly reachable origin. It is baked into uploaded

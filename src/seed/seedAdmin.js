@@ -1,5 +1,5 @@
-import { connectDatabase, disconnectDatabase } from '../config/db.js';
-import { AdminUser } from '../models/AdminUser.js';
+import bcrypt from 'bcryptjs';
+import { prisma, connectDatabase, disconnectDatabase } from '../config/db.js';
 import { env } from '../config/env.js';
 
 async function run() {
@@ -10,17 +10,20 @@ async function run() {
 
   await connectDatabase();
 
-  const existing = await AdminUser.findOne({ email: env.admin.email });
+  const existing = await prisma.adminUser.findUnique({ where: { email: env.admin.email } });
   if (existing) {
     console.log(`[seed:admin] ${env.admin.email} already exists — leaving it untouched.`);
-    console.log('[seed:admin] To reset the password, delete the adminusers document and re-run.');
+    console.log('[seed:admin] To reset the password, delete the admin_users row and re-run.');
   } else {
-    // The pre-save hook hashes this; never store the plaintext.
-    await AdminUser.create({
-      email: env.admin.email,
-      passwordHash: env.admin.password,
-      name: env.admin.name,
-      role: 'admin',
+    // The Mongoose pre('save') hook used to hash this. Postgres has no hooks,
+    // so hashing happens here — the plaintext is never stored.
+    await prisma.adminUser.create({
+      data: {
+        email: env.admin.email,
+        passwordHash: await bcrypt.hash(env.admin.password, 12),
+        name: env.admin.name,
+        role: 'admin',
+      },
     });
     console.log(`[seed:admin] created administrator ${env.admin.email}`);
   }

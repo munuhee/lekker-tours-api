@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { FAQ } from '../models/FAQ.js';
+import { prisma } from '../config/db.js';
 import { createCrudControllers } from '../services/crud.factory.js';
 import { validate } from '../middleware/validate.js';
 import { requireAdmin } from '../middleware/auth.js';
@@ -9,11 +9,11 @@ import { statusBodySchema } from '../validators/tour.validator.js';
 import { createFaqSchema, updateFaqSchema, faqListQuery } from '../validators/content.validator.js';
 
 const ctrl = createCrudControllers({
-  Model: FAQ,
+  delegate: prisma.faq,
   label: 'FAQ',
   slugField: null,
   titleField: null,
-  defaultSort: { group: 1, order: 1 },
+  defaultSort: [{ group: 'asc' }, { order: 'asc' }],
   buildFilter: (q) => (q.group ? { group: q.group } : {}),
   revalidateTags: () => ['faqs', 'home'],
 });

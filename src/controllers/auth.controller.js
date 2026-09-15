@@ -1,11 +1,13 @@
-import { AdminUser } from '../models/AdminUser.js';
+import bcrypt from 'bcryptjs';
+import { prisma } from '../config/db.js';
 import { ApiError } from '../utils/ApiError.js';
 import { sendData } from '../utils/respond.js';
 import { signAdminToken, setAuthCookie, clearAuthCookie } from '../middleware/auth.js';
 
 function publicShape(admin) {
   return {
-    id: admin._id,
+    id: admin.id,
+    _id: admin.id,
     email: admin.email,
     name: admin.name,
     role: admin.role,
@@ -16,19 +18,23 @@ function publicShape(admin) {
 export async function login(req, res) {
   const { email, password } = req.body;
 
-  // Select the hash explicitly; the schema hides it by default.
-  const admin = await AdminUser.findOne({ email }).select('+passwordHash');
+  // Unlike the old schema, Postgres has no select:false — the hash comes back
+  // on every read, so it must never be handed to a serializer. publicShape()
+  // is the only thing that reaches the client.
+  const admin = await prisma.adminUser.findUnique({ where: { email } });
 
   // Same message for unknown email and wrong password — don't reveal which.
-  if (!admin || !(await admin.verifyPassword(password))) {
+  if (!admin || !(await bcrypt.compare(password, admin.passwordHash))) {
     throw ApiError.unauthorized('Those credentials do not match our records.');
   }
 
-  admin.lastLoginAt = new Date();
-  await admin.save();
+  const updated = await prisma.adminUser.update({
+    where: { id: admin.id },
+    data: { lastLoginAt: new Date() },
+  });
 
-  setAuthCookie(res, signAdminToken(admin));
-  sendData(res, publicShape(admin));
+  setAuthCookie(res, signAdminToken(updated));
+  sendData(res, publicShape(updated));
 }
 
 export async function logout(req, res) {

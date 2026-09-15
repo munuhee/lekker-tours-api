@@ -2,12 +2,24 @@ import { createApp } from './app.js';
 import { connectDatabase, disconnectDatabase } from './config/db.js';
 import { env } from './config/env.js';
 
+/** Hides the password when echoing the connection string on a failed start. */
+function redact(url) {
+  try {
+    const parsed = new URL(url);
+    if (parsed.password) parsed.password = '***';
+    return parsed.toString();
+  } catch {
+    return '(unparseable DATABASE_URL)';
+  }
+}
+
 async function start() {
   try {
     await connectDatabase();
   } catch (err) {
-    console.error('[startup] could not reach MongoDB:', err.message);
-    console.error(`[startup] tried ${env.mongoUri} — is the MongoDB service running?`);
+    console.error('[startup] could not reach PostgreSQL:', err.message);
+    console.error(`[startup] tried ${redact(env.databaseUrl)} — is the database running?`);
+    console.error('[startup] to start one locally: docker compose up -d');
     process.exit(1);
   }
 

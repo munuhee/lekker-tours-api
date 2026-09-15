@@ -1,123 +1,167 @@
-import { Tour } from '../models/Tour.js';
+import { prisma } from '../config/db.js';
 import { ApiError } from '../utils/ApiError.js';
 import { uniqueSlug } from '../utils/slugify.js';
+import { serializeTour, serializeMany } from '../utils/serialize.js';
 
 const SORTS = {
-  recommended: { featured: -1, order: 1, createdAt: -1 },
-  'price-asc': { priceFrom: 1 },
-  'price-desc': { priceFrom: -1 },
-  'duration-asc': { durationDays: 1 },
-  newest: { createdAt: -1 },
+  recommended: [{ featured: 'desc' }, { order: 'asc' }, { createdAt: 'desc' }],
+  'price-asc': [{ priceFrom: 'asc' }],
+  'price-desc': [{ priceFrom: 'desc' }],
+  'duration-asc': [{ durationDays: 'asc' }],
+  newest: [{ createdAt: 'desc' }],
 };
 
-function buildFilter(query, { publishedOnly }) {
-  const filter = {};
-  if (publishedOnly) filter.status = 'published';
-  else if (query.status) filter.status = query.status;
+/** The destination fields the tour pages actually render. */
+const DESTINATION_CARD = { select: { id: true, name: true, slug: true, country: true } };
+const DESTINATION_DETAIL = {
+  select: { id: true, name: true, slug: true, country: true, heroImage: true },
+};
 
-  if (query.category) filter.category = query.category;
-  if (query.country) filter.countries = query.country;
-  if (query.destination) filter.destination = query.destination;
-  if (query.featured) filter.featured = query.featured === 'true';
-  if (query.bestSelling) filter.bestSelling = query.bestSelling === 'true';
+function buildWhere(query, { publishedOnly }) {
+  const where = {};
+  if (publishedOnly) where.status = 'published';
+  else if (query.status) where.status = query.status;
+
+  if (query.category) where.category = query.category;
+  // `countries` is a Postgres array column; `has` is the array-contains test.
+  if (query.country) where.countries = { has: query.country };
+  if (query.destination) where.destinationId = query.destination;
+  if (query.featured) where.featured = query.featured === 'true';
+  if (query.bestSelling) where.bestSelling = query.bestSelling === 'true';
 
   if (query.minPrice != null || query.maxPrice != null) {
-    filter.priceFrom = {};
-    if (query.minPrice != null) filter.priceFrom.$gte = query.minPrice;
-    if (query.maxPrice != null) filter.priceFrom.$lte = query.maxPrice;
+    where.priceFrom = {};
+    if (query.minPrice != null) where.priceFrom.gte = query.minPrice;
+    if (query.maxPrice != null) where.priceFrom.lte = query.maxPrice;
   }
 
-  // Regex rather than $text so partial words match as the user types.
+  // Substring rather than full-text search, so partial words match as the user
+  // types — the same reason the Mongo version used a regex over $text.
   if (query.q) {
-    const rx = new RegExp(query.q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
-    filter.$or = [{ title: rx }, { summary: rx }, { highlights: rx }];
+    where.OR = [
+      { title: { contains: query.q, mode: 'insensitive' } },
+      { summary: { contains: query.q, mode: 'insensitive' } },
+      { highlights: { has: query.q } },
+    ];
   }
 
-  return filter;
+  return where;
 }
 
 export async function listTours(query, { publishedOnly = true } = {}) {
   const { page, limit, sort } = query;
-  const filter = buildFilter(query, { publishedOnly });
+  const where = buildWhere(query, { publishedOnly });
 
   const [items, total] = await Promise.all([
-    Tour.find(filter)
-      .sort(SORTS[sort] ?? SORTS.recommended)
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .populate('destination', 'name slug country')
-      .lean({ virtuals: true }),
-    Tour.countDocuments(filter),
+    prisma.tour.findMany({
+      where,
+      orderBy: SORTS[sort] ?? SORTS.recommended,
+      skip: (page - 1) * limit,
+      take: limit,
+      include: { destination: DESTINATION_CARD },
+    }),
+    prisma.tour.count({ where }),
   ]);
 
-  return { items, total, page, limit };
+  return { items: serializeMany(items, serializeTour), total, page, limit };
 }
 
 export async function getTourBySlug(slug, { publishedOnly = true } = {}) {
-  const filter = { slug };
-  if (publishedOnly) filter.status = 'published';
+  const where = { slug };
+  if (publishedOnly) where.status = 'published';
 
-  const tour = await Tour.findOne(filter)
-    .populate('destination', 'name slug country heroImage')
-    .lean({ virtuals: true });
+  const tour = await prisma.tour.findFirst({
+    where,
+    include: { destination: DESTINATION_DETAIL },
+  });
 
   if (!tour) throw ApiError.notFound('We could not find that tour.');
-  return tour;
+  return serializeTour(tour);
 }
 
 export async function getTourById(id) {
-  const tour = await Tour.findById(id).lean({ virtuals: true });
+  const tour = await prisma.tour.findUnique({
+    where: { id },
+    include: { destination: DESTINATION_CARD },
+  });
   if (!tour) throw ApiError.notFound('We could not find that tour.');
-  return tour;
+  return serializeTour(tour);
 }
 
 export async function getRelatedTours(slug, limit = 3) {
-  const current = await Tour.findOne({ slug, status: 'published' }).lean();
+  const current = await prisma.tour.findFirst({ where: { slug, status: 'published' } });
   if (!current) throw ApiError.notFound('We could not find that tour.');
 
   // Prefer the same category, then fall back to shared countries.
-  const related = await Tour.find({
-    _id: { $ne: current._id },
-    status: 'published',
-    $or: [{ category: current.category }, { countries: { $in: current.countries ?? [] } }],
-  })
-    .sort({ featured: -1, order: 1 })
-    .limit(limit)
-    .lean({ virtuals: true });
+  const related = await prisma.tour.findMany({
+    where: {
+      id: { not: current.id },
+      status: 'published',
+      OR: [
+        { category: current.category },
+        { countries: { hasSome: current.countries ?? [] } },
+      ],
+    },
+    orderBy: [{ featured: 'desc' }, { order: 'asc' }],
+    take: limit,
+    include: { destination: DESTINATION_CARD },
+  });
 
-  return related;
+  return serializeMany(related, serializeTour);
+}
+
+/**
+ * The API accepts `destination` as an id string (the web app's forms send it
+ * that way), but Prisma writes the FK as `destinationId`.
+ */
+function toRow(payload) {
+  const { destination, ...data } = payload;
+  if (destination !== undefined) data.destinationId = destination || null;
+  return data;
 }
 
 export async function createTour(payload) {
-  const slug = await uniqueSlug(Tour, payload.slug || payload.title);
-  const tour = await Tour.create({ ...payload, slug });
-  return tour.toJSON();
+  const slug = await uniqueSlug(prisma.tour, payload.slug || payload.title);
+  const data = toRow({ ...payload, slug });
+
+  // durationNights defaulted off durationDays in the old pre('validate') hook.
+  if (data.durationNights == null && data.durationDays != null) {
+    data.durationNights = Math.max(0, data.durationDays - 1);
+  }
+
+  const tour = await prisma.tour.create({
+    data,
+    include: { destination: { select: { id: true, name: true, slug: true, country: true } } },
+  });
+  return serializeTour(tour);
 }
 
 export async function updateTour(id, payload) {
-  const tour = await Tour.findById(id);
-  if (!tour) throw ApiError.notFound('We could not find that tour.');
+  const existing = await prisma.tour.findUnique({ where: { id } });
+  if (!existing) throw ApiError.notFound('We could not find that tour.');
 
-  if (payload.slug && payload.slug !== tour.slug) {
-    payload.slug = await uniqueSlug(Tour, payload.slug, tour._id);
-  } else if (payload.title && !payload.slug) {
+  const data = { ...payload };
+  if (data.slug && data.slug !== existing.slug) {
+    data.slug = await uniqueSlug(prisma.tour, data.slug, existing.id);
+  } else {
     // Keep the existing slug on rename so published links do not break.
-    delete payload.slug;
+    delete data.slug;
   }
 
-  Object.assign(tour, payload);
-  await tour.save();
-  return tour.toJSON();
+  const tour = await prisma.tour.update({
+    where: { id: existing.id },
+    data: toRow(data),
+    include: { destination: { select: { id: true, name: true, slug: true, country: true } } },
+  });
+  return serializeTour(tour);
 }
 
 export async function setTourStatus(id, status) {
-  const tour = await Tour.findByIdAndUpdate(id, { status }, { returnDocument: 'after', runValidators: true });
-  if (!tour) throw ApiError.notFound('We could not find that tour.');
-  return tour.toJSON();
+  const tour = await prisma.tour.update({ where: { id }, data: { status } });
+  return serializeTour(tour);
 }
 
 export async function deleteTour(id) {
-  const tour = await Tour.findByIdAndDelete(id);
-  if (!tour) throw ApiError.notFound('We could not find that tour.');
+  await prisma.tour.delete({ where: { id } });
   return { id };
 }

@@ -10,15 +10,25 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      mongodb:
-        image: mongo:7
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: lekker_tours_ci
         ports:
-          - 27017:27017
+          - 5432:5432
         options: >-
-          --health-cmd "mongosh --quiet --eval 'db.runCommand({ping:1})'"
+          --health-cmd "pg_isready -U postgres -d lekker_tours_ci"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/lekker_tours_ci?schema=public
+      WEB_ORIGIN: http://localhost:3000
+      PUBLIC_API_URL: http://localhost:4000
+      JWT_SECRET: ci-only-secret-not-used-in-production
 
     steps:
       - uses: actions/checkout@v4
@@ -35,12 +45,13 @@ jobs:
       - name: Syntax check all sources
         run: git ls-files '*.js' | xargs -n1 node --check
 
-      - name: Boot the app against MongoDB
-        env:
-          MONGODB_URI: mongodb://127.0.0.1:27017/lekker_tours_ci
-          WEB_ORIGIN: http://localhost:3000
-          PUBLIC_API_URL: http://localhost:4000
-          JWT_SECRET: ci-only-secret-not-used-in-production
+      - name: Validate the Prisma schema
+        run: npx prisma validate
+
+      - name: Apply migrations
+        run: npx prisma migrate deploy
+
+      - name: Boot the app against PostgreSQL
         run: |
           node -e "
             import('./src/app.js')
@@ -50,10 +61,6 @@ jobs:
 
       - name: Seed, then verify the API answers
         env:
-          MONGODB_URI: mongodb://127.0.0.1:27017/lekker_tours_ci
-          WEB_ORIGIN: http://localhost:3000
-          PUBLIC_API_URL: http://localhost:4000
-          JWT_SECRET: ci-only-secret-not-used-in-production
           ADMIN_EMAIL: ci@example.com
           ADMIN_PASSWORD: CiPassword123!
         run: |

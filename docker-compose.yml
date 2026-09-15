@@ -1,0 +1,66 @@
+# Local PostgreSQL + the API, for development and backend testing.
+#
+# Database only (run the API on the host with `npm run dev`):
+#   docker compose up -d postgres
+#   npm run db:migrate && npm run seed:admin && npm run seed
+#
+# Everything in containers:
+#   docker compose up --build
+#   docker compose run --rm api npm run seed:admin
+#   docker compose run --rm api npm run seed
+#
+# The credentials here are development-only — a deployed database needs real
+# secrets, and JWT_SECRET below must not be reused.
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: lekker-tours-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: lekker_tours
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d lekker_tours']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    container_name: lekker-tours-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: 4000
+      # `postgres` is the compose service name — inside the network it resolves
+      # to the database container, not localhost.
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/lekker_tours?schema=public
+      WEB_ORIGIN: ${WEB_ORIGIN:-http://localhost:3000}
+      PUBLIC_API_URL: ${PUBLIC_API_URL:-http://localhost:4000}
+      JWT_SECRET: ${JWT_SECRET:-dev-only-compose-secret-change-me}
+      JWT_EXPIRES_IN: 7d
+      REVALIDATE_SECRET: ${REVALIDATE_SECRET:-}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@lekkertours.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-ChangeThisPassword123!}
+      ADMIN_NAME: ${ADMIN_NAME:-Lekker Administrator}
+    ports:
+      - '4000:4000'
+    volumes:
+      # Uploads must outlive the container, or every admin-uploaded image
+      # disappears on the next `docker compose up`.
+      - uploads:/app/uploads
+    # Migrations are applied on start so a fresh volume comes up usable.
+    command: sh -c "npx prisma migrate deploy && node src/server.js"
+
+volumes:
+  pgdata:
+  uploads:

@@ -1,12 +1,12 @@
 import jwt from 'jsonwebtoken';
 import { env } from '../config/env.js';
 import { ApiError } from '../utils/ApiError.js';
-import { AdminUser } from '../models/AdminUser.js';
+import { prisma } from '../config/db.js';
 
 export const AUTH_COOKIE = 'lekker_admin_token';
 
 export function signAdminToken(admin) {
-  return jwt.sign({ sub: String(admin._id), role: admin.role }, env.jwtSecret, {
+  return jwt.sign({ sub: String(admin.id), role: admin.role }, env.jwtSecret, {
     expiresIn: env.jwtExpiresIn,
   });
 }
@@ -38,7 +38,15 @@ export async function requireAdmin(req, res, next) {
     return next(ApiError.unauthorized('Your session has expired. Please sign in again.'));
   }
 
-  const admin = await AdminUser.findById(payload.sub);
+  // A token issued before the Postgres migration carries a 24-hex Mongo id,
+  // which is not a valid UUID and would make Prisma throw rather than miss.
+  let admin = null;
+  try {
+    admin = await prisma.adminUser.findUnique({ where: { id: payload.sub } });
+  } catch {
+    admin = null;
+  }
+
   if (!admin) {
     clearAuthCookie(res);
     return next(ApiError.unauthorized('That account no longer exists.'));

@@ -1,8 +1,10 @@
 import { z } from 'zod';
 
-export const objectId = z
-  .string()
-  .regex(/^[0-9a-fA-F]{24}$/, 'That is not a valid id.');
+/**
+ * Primary keys are Postgres UUIDs. The name is kept so the many `objectId`
+ * imports across the validators still resolve; only the shape changed.
+ */
+export const objectId = z.string().uuid('That is not a valid id.');
 
 export const idParam = z.object({ id: objectId });
 export const slugParam = z.object({ slug: z.string().min(1).max(120) });
