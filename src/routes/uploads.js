@@ -2,6 +2,7 @@ import { Router } from 'express';
 import multer from 'multer';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import fs from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { requireAdmin } from '../middleware/auth.js';
 import { ApiError } from '../utils/ApiError.js';
@@ -66,6 +67,36 @@ router.post('/admin/uploads', requireAdmin, (req, res, next) => {
       { status: 201 }
     );
   });
+});
+
+/**
+ * Uploads land on disk the moment a file is chosen, so replacing or clearing an
+ * image used to leave the old file behind forever. The admin UI calls this when
+ * it drops a reference it just created.
+ *
+ * Only a bare filename is accepted, and the resolved path is re-checked against
+ * UPLOAD_DIR, so no traversal can reach outside the uploads directory.
+ */
+router.delete('/admin/uploads/:filename', requireAdmin, async (req, res, next) => {
+  const { filename } = req.params;
+
+  if (filename !== path.basename(filename) || filename.startsWith('.')) {
+    return next(ApiError.badRequest('That is not a valid filename.'));
+  }
+
+  const target = path.resolve(UPLOAD_DIR, filename);
+  if (path.dirname(target) !== UPLOAD_DIR) {
+    return next(ApiError.badRequest('That is not a valid filename.'));
+  }
+
+  try {
+    await fs.unlink(target);
+  } catch (err) {
+    // Already gone is a success from the caller's point of view.
+    if (err.code !== 'ENOENT') return next(err);
+  }
+
+  sendData(res, { filename, deleted: true });
 });
 
 export default router;

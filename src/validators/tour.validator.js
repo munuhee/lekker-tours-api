@@ -21,7 +21,7 @@ export const createTourSchema = z.object({
   description: z.string().trim().min(20, 'Write a fuller description.'),
 
   priceFrom: z.coerce.number().min(0, 'Price cannot be negative.'),
-  currency: z.string().length(3).default('USD'),
+  currency: z.string().length(3).default('KES'),
   durationDays: z.coerce.number().int().min(1).max(60),
   durationNights: z.coerce.number().int().min(0).max(60).optional(),
   groupSizeMax: z.coerce.number().int().min(1).default(12),

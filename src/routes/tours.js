@@ -2,6 +2,7 @@ import { Router } from 'express';
 import * as ctrl from '../controllers/tour.controller.js';
 import { validate } from '../middleware/validate.js';
 import { requireAdmin } from '../middleware/auth.js';
+import { requireRole } from '../middleware/requireRole.js';
 import { idParam, slugParam } from '../validators/common.js';
 import {
   createTourSchema,
@@ -34,6 +35,13 @@ router.patch(
   validate({ params: idParam, body: statusBodySchema }),
   ctrl.updateTourStatus
 );
-router.delete('/admin/tours/:id', requireAdmin, validate({ params: idParam }), ctrl.deleteTour);
+/* Deletion is admin-only; editors may create and edit but not destroy. */
+router.delete(
+  '/admin/tours/:id',
+  requireAdmin,
+  requireRole('admin'),
+  validate({ params: idParam }),
+  ctrl.deleteTour
+);
 
 export default router;

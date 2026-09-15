@@ -38,7 +38,7 @@ const tourSchema = new Schema(
     description: { type: String, required: [true, 'A full description is required.'], trim: true },
 
     priceFrom: { type: Number, required: [true, 'A starting price is required.'], min: 0 },
-    currency: { type: String, default: 'USD', uppercase: true, maxlength: 3 },
+    currency: { type: String, default: 'KES', uppercase: true, maxlength: 3 },
 
     durationDays: { type: Number, required: true, min: 1, max: 60 },
     durationNights: { type: Number, min: 0, max: 60 },

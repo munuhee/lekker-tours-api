@@ -3,6 +3,7 @@ import { FAQ } from '../models/FAQ.js';
 import { createCrudControllers } from '../services/crud.factory.js';
 import { validate } from '../middleware/validate.js';
 import { requireAdmin } from '../middleware/auth.js';
+import { requireRole } from '../middleware/requireRole.js';
 import { idParam } from '../validators/common.js';
 import { statusBodySchema } from '../validators/tour.validator.js';
 import { createFaqSchema, updateFaqSchema, faqListQuery } from '../validators/content.validator.js';
@@ -36,6 +37,13 @@ router.patch(
   validate({ params: idParam, body: statusBodySchema }),
   ctrl.updateStatus
 );
-router.delete('/admin/faqs/:id', requireAdmin, validate({ params: idParam }), ctrl.remove);
+/* Deletion is admin-only; editors may create and edit but not destroy. */
+router.delete(
+  '/admin/faqs/:id',
+  requireAdmin,
+  requireRole('admin'),
+  validate({ params: idParam }),
+  ctrl.remove
+);
 
 export default router;

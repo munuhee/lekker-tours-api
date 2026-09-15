@@ -3,6 +3,7 @@ import rateLimit from 'express-rate-limit';
 import * as ctrl from '../controllers/enquiry.controller.js';
 import { validate } from '../middleware/validate.js';
 import { requireAdmin } from '../middleware/auth.js';
+import { requireRole } from '../middleware/requireRole.js';
 import { idParam } from '../validators/common.js';
 import {
   createEnquirySchema,
@@ -34,6 +35,13 @@ router.patch(
   validate({ params: idParam, body: updateEnquirySchema }),
   ctrl.updateEnquiry
 );
-router.delete('/admin/enquiries/:id', requireAdmin, validate({ params: idParam }), ctrl.deleteEnquiry);
+/* Deletion is admin-only; editors may triage enquiries but not destroy them. */
+router.delete(
+  '/admin/enquiries/:id',
+  requireAdmin,
+  requireRole('admin'),
+  validate({ params: idParam }),
+  ctrl.deleteEnquiry
+);
 
 export default router;

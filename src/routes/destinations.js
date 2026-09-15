@@ -3,6 +3,7 @@ import { Destination } from '../models/Destination.js';
 import { createCrudControllers } from '../services/crud.factory.js';
 import { validate } from '../middleware/validate.js';
 import { requireAdmin } from '../middleware/auth.js';
+import { requireRole } from '../middleware/requireRole.js';
 import { idParam, slugParam } from '../validators/common.js';
 import { statusBodySchema } from '../validators/tour.validator.js';
 import {
@@ -45,6 +46,13 @@ router.patch(
   validate({ params: idParam, body: statusBodySchema }),
   ctrl.updateStatus
 );
-router.delete('/admin/destinations/:id', requireAdmin, validate({ params: idParam }), ctrl.remove);
+/* Deletion is admin-only; editors may create and edit but not destroy. */
+router.delete(
+  '/admin/destinations/:id',
+  requireAdmin,
+  requireRole('admin'),
+  validate({ params: idParam }),
+  ctrl.remove
+);
 
 export default router;

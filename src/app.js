@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { env } from './config/env.js';
 import routes from './routes/index.js';
 import { notFound, errorHandler } from './middleware/error.js';
+import { verifyOrigin } from './middleware/csrf.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -28,7 +29,10 @@ export function createApp() {
 
   app.use('/uploads', express.static(path.resolve(__dirname, '../uploads')));
 
-  app.use('/api', routes);
+  // Cookie-authenticated writes must declare a trusted origin. Mounted after
+  // the body parsers so rejected requests are still fully read, and before the
+  // routes so it covers every write including uploads.
+  app.use('/api', verifyOrigin, routes);
 
   // Express 5 / path-to-regexp v8: a bare '*' throws. Use a named splat.
   app.use('/{*splat}', notFound);
