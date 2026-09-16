@@ -6,11 +6,12 @@ const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
 /**
  * Origin check on cookie-authenticated writes.
  *
- * The session cookie is sameSite:'lax', which stops cross-*site* form posts in
- * current browsers — but "site" is the registrable domain, so any subdomain
- * sharing it can still forge a state-changing request, and lax is a browser
- * policy rather than a server guarantee. Given this API exposes uploads and
- * DELETEs, verify the declared origin explicitly.
+ * This is the primary CSRF defence, not a belt-and-braces one. The session
+ * cookie is sameSite:'none' in production — it has to be, because the web app
+ * and this API are separate hosts and a 'lax' cookie would never be sent back
+ * (see middleware/auth.js) — so the browser offers no cross-site protection of
+ * its own. Given this API exposes uploads and DELETEs, the declared origin is
+ * verified explicitly on every state-changing request.
  *
  * Only unsafe methods are checked. Requests with neither Origin nor Referer are
  * rejected too: every browser sends Origin on cross-origin writes, so a missing
