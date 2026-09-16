@@ -42,20 +42,7 @@ router.get('/destinations', validate({ query: destinationListQuery }), ctrl.list
 router.get('/destinations/:slug', validate({ params: slugParam }), ctrl.getPublicBySlug);
 
 router.get('/admin/destinations', requireAdmin, validate({ query: destinationListQuery }), ctrl.listAdmin);
-router.get('/admin/destinations/:id', requireAdmin, validate({ params: idParam }), ctrl.getAdminById);
-router.post('/admin/destinations', requireAdmin, validate({ body: createDestinationSchema }), ctrl.create);
-router.patch(
-  '/admin/destinations/:id',
-  requireAdmin,
-  validate({ params: idParam, body: updateDestinationSchema }),
-  ctrl.update
-);
-router.patch(
-  '/admin/destinations/:id/status',
-  requireAdmin,
-  validate({ params: idParam, body: statusBodySchema }),
-  ctrl.updateStatus
-);
+
 /* Bulk actions mirror the single-item permissions: status for any admin,
    deletion for full admins only. */
 router.patch(
@@ -72,6 +59,20 @@ router.delete(
   ctrl.bulkRemove
 );
 
+router.get('/admin/destinations/:id', requireAdmin, validate({ params: idParam }), ctrl.getAdminById);
+router.post('/admin/destinations', requireAdmin, validate({ body: createDestinationSchema }), ctrl.create);
+router.patch(
+  '/admin/destinations/:id',
+  requireAdmin,
+  validate({ params: idParam, body: updateDestinationSchema }),
+  ctrl.update
+);
+router.patch(
+  '/admin/destinations/:id/status',
+  requireAdmin,
+  validate({ params: idParam, body: statusBodySchema }),
+  ctrl.updateStatus
+);
 /* Deletion is admin-only; editors may create and edit but not destroy. */
 router.delete(
   '/admin/destinations/:id',

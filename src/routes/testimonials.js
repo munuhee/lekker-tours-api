@@ -34,20 +34,7 @@ const router = Router();
 router.get('/testimonials', validate({ query: testimonialListQuery }), ctrl.listPublic);
 
 router.get('/admin/testimonials', requireAdmin, validate({ query: testimonialListQuery }), ctrl.listAdmin);
-router.get('/admin/testimonials/:id', requireAdmin, validate({ params: idParam }), ctrl.getAdminById);
-router.post('/admin/testimonials', requireAdmin, validate({ body: createTestimonialSchema }), ctrl.create);
-router.patch(
-  '/admin/testimonials/:id',
-  requireAdmin,
-  validate({ params: idParam, body: updateTestimonialSchema }),
-  ctrl.update
-);
-router.patch(
-  '/admin/testimonials/:id/status',
-  requireAdmin,
-  validate({ params: idParam, body: statusBodySchema }),
-  ctrl.updateStatus
-);
+
 /* Bulk actions mirror the single-item permissions: status for any admin,
    deletion for full admins only. */
 router.patch(
@@ -64,6 +51,20 @@ router.delete(
   ctrl.bulkRemove
 );
 
+router.get('/admin/testimonials/:id', requireAdmin, validate({ params: idParam }), ctrl.getAdminById);
+router.post('/admin/testimonials', requireAdmin, validate({ body: createTestimonialSchema }), ctrl.create);
+router.patch(
+  '/admin/testimonials/:id',
+  requireAdmin,
+  validate({ params: idParam, body: updateTestimonialSchema }),
+  ctrl.update
+);
+router.patch(
+  '/admin/testimonials/:id/status',
+  requireAdmin,
+  validate({ params: idParam, body: statusBodySchema }),
+  ctrl.updateStatus
+);
 /* Deletion is admin-only; editors may create and edit but not destroy. */
 router.delete(
   '/admin/testimonials/:id',

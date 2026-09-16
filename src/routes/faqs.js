@@ -29,20 +29,7 @@ const router = Router();
 router.get('/faqs', validate({ query: faqListQuery }), ctrl.listPublic);
 
 router.get('/admin/faqs', requireAdmin, validate({ query: faqListQuery }), ctrl.listAdmin);
-router.get('/admin/faqs/:id', requireAdmin, validate({ params: idParam }), ctrl.getAdminById);
-router.post('/admin/faqs', requireAdmin, validate({ body: createFaqSchema }), ctrl.create);
-router.patch(
-  '/admin/faqs/:id',
-  requireAdmin,
-  validate({ params: idParam, body: updateFaqSchema }),
-  ctrl.update
-);
-router.patch(
-  '/admin/faqs/:id/status',
-  requireAdmin,
-  validate({ params: idParam, body: statusBodySchema }),
-  ctrl.updateStatus
-);
+
 /* Bulk actions mirror the single-item permissions: status for any admin,
    deletion for full admins only. */
 router.patch(
@@ -59,6 +46,20 @@ router.delete(
   ctrl.bulkRemove
 );
 
+router.get('/admin/faqs/:id', requireAdmin, validate({ params: idParam }), ctrl.getAdminById);
+router.post('/admin/faqs', requireAdmin, validate({ body: createFaqSchema }), ctrl.create);
+router.patch(
+  '/admin/faqs/:id',
+  requireAdmin,
+  validate({ params: idParam, body: updateFaqSchema }),
+  ctrl.update
+);
+router.patch(
+  '/admin/faqs/:id/status',
+  requireAdmin,
+  validate({ params: idParam, body: statusBodySchema }),
+  ctrl.updateStatus
+);
 /* Deletion is admin-only; editors may create and edit but not destroy. */
 router.delete(
   '/admin/faqs/:id',

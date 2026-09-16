@@ -29,13 +29,7 @@ const submitLimiter = rateLimit({
 router.post('/enquiries', submitLimiter, validate({ body: createEnquirySchema }), ctrl.submitEnquiry);
 
 router.get('/admin/enquiries', requireAdmin, validate({ query: enquiryListQuery }), ctrl.listEnquiries);
-router.get('/admin/enquiries/:id', requireAdmin, validate({ params: idParam }), ctrl.getEnquiry);
-router.patch(
-  '/admin/enquiries/:id',
-  requireAdmin,
-  validate({ params: idParam, body: updateEnquirySchema }),
-  ctrl.updateEnquiry
-);
+
 /* Bulk triage. Registered before `/:id` so "bulk" is never read as an id. */
 router.patch(
   '/admin/enquiries/bulk/status',
@@ -51,6 +45,13 @@ router.delete(
   ctrl.bulkDeleteEnquiries
 );
 
+router.get('/admin/enquiries/:id', requireAdmin, validate({ params: idParam }), ctrl.getEnquiry);
+router.patch(
+  '/admin/enquiries/:id',
+  requireAdmin,
+  validate({ params: idParam, body: updateEnquirySchema }),
+  ctrl.updateEnquiry
+);
 /* Deletion is admin-only; editors may triage enquiries but not destroy them. */
 router.delete(
   '/admin/enquiries/:id',

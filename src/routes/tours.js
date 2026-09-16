@@ -21,20 +21,7 @@ router.get('/tours/:slug/related', validate({ params: slugParam }), ctrl.getRela
 
 /* Admin — includes drafts. */
 router.get('/admin/tours', requireAdmin, validate({ query: adminTourListQuery }), ctrl.listAdminTours);
-router.get('/admin/tours/:id', requireAdmin, validate({ params: idParam }), ctrl.getAdminTour);
-router.post('/admin/tours', requireAdmin, validate({ body: createTourSchema }), ctrl.createTour);
-router.patch(
-  '/admin/tours/:id',
-  requireAdmin,
-  validate({ params: idParam, body: updateTourSchema }),
-  ctrl.updateTour
-);
-router.patch(
-  '/admin/tours/:id/status',
-  requireAdmin,
-  validate({ params: idParam, body: statusBodySchema }),
-  ctrl.updateTourStatus
-);
+
 /* Bulk actions mirror the single-item permissions: status for any admin,
    deletion for full admins only. Registered before `/:id` so that "bulk" is
    never parsed as a tour id. */
@@ -52,6 +39,20 @@ router.delete(
   ctrl.bulkDeleteTours
 );
 
+router.get('/admin/tours/:id', requireAdmin, validate({ params: idParam }), ctrl.getAdminTour);
+router.post('/admin/tours', requireAdmin, validate({ body: createTourSchema }), ctrl.createTour);
+router.patch(
+  '/admin/tours/:id',
+  requireAdmin,
+  validate({ params: idParam, body: updateTourSchema }),
+  ctrl.updateTour
+);
+router.patch(
+  '/admin/tours/:id/status',
+  requireAdmin,
+  validate({ params: idParam, body: statusBodySchema }),
+  ctrl.updateTourStatus
+);
 /* Deletion is admin-only; editors may create and edit but not destroy. */
 router.delete(
   '/admin/tours/:id',

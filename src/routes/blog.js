@@ -39,20 +39,7 @@ router.get('/blog', validate({ query: blogListQuery }), ctrl.listPublic);
 router.get('/blog/:slug', validate({ params: slugParam }), ctrl.getPublicBySlug);
 
 router.get('/admin/blog', requireAdmin, validate({ query: blogListQuery }), ctrl.listAdmin);
-router.get('/admin/blog/:id', requireAdmin, validate({ params: idParam }), ctrl.getAdminById);
-router.post('/admin/blog', requireAdmin, validate({ body: createBlogPostSchema }), ctrl.create);
-router.patch(
-  '/admin/blog/:id',
-  requireAdmin,
-  validate({ params: idParam, body: updateBlogPostSchema }),
-  ctrl.update
-);
-router.patch(
-  '/admin/blog/:id/status',
-  requireAdmin,
-  validate({ params: idParam, body: statusBodySchema }),
-  ctrl.updateStatus
-);
+
 /* Bulk actions mirror the single-item permissions: status for any admin,
    deletion for full admins only. */
 router.patch(
@@ -69,6 +56,20 @@ router.delete(
   ctrl.bulkRemove
 );
 
+router.get('/admin/blog/:id', requireAdmin, validate({ params: idParam }), ctrl.getAdminById);
+router.post('/admin/blog', requireAdmin, validate({ body: createBlogPostSchema }), ctrl.create);
+router.patch(
+  '/admin/blog/:id',
+  requireAdmin,
+  validate({ params: idParam, body: updateBlogPostSchema }),
+  ctrl.update
+);
+router.patch(
+  '/admin/blog/:id/status',
+  requireAdmin,
+  validate({ params: idParam, body: statusBodySchema }),
+  ctrl.updateStatus
+);
 /* Deletion is admin-only; editors may create and edit but not destroy. */
 router.delete(
   '/admin/blog/:id',
