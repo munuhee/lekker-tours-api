@@ -26,16 +26,32 @@ export async function submitEnquiry(req, res) {
 
 /* ---------- admin ---------- */
 
+const ENQUIRY_SORTS = {
+  newest: [{ createdAt: 'desc' }],
+  oldest: [{ createdAt: 'asc' }],
+  'name-asc': [{ name: 'asc' }],
+};
+
 export async function listEnquiries(req, res) {
-  const { page, limit, status, type } = req.query;
+  const { page, limit, status, type, q, sort } = req.query;
   const where = {};
   if (status) where.status = status;
   if (type) where.type = type;
 
+  // Sender name, address and message body — what an admin remembers when
+  // hunting for a specific enquiry.
+  if (q) {
+    where.OR = [
+      { name: { contains: q, mode: 'insensitive' } },
+      { email: { contains: q, mode: 'insensitive' } },
+      { message: { contains: q, mode: 'insensitive' } },
+    ];
+  }
+
   const [items, total, unreadCount] = await Promise.all([
     prisma.enquiry.findMany({
       where,
-      orderBy: [{ createdAt: 'desc' }],
+      orderBy: ENQUIRY_SORTS[sort] ?? ENQUIRY_SORTS.newest,
       skip: (page - 1) * limit,
       take: limit,
       include: { tour: TOUR_SUMMARY },
@@ -81,4 +97,23 @@ export async function updateEnquiry(req, res) {
 export async function deleteEnquiry(req, res) {
   await prisma.enquiry.delete({ where: { id: req.params.id } });
   sendData(res, { id: req.params.id });
+}
+
+/* ---------- bulk ---------- */
+
+export async function bulkEnquiryStatus(req, res) {
+  const { ids, status } = req.body;
+  const { count } = await prisma.enquiry.updateMany({
+    where: { id: { in: ids } },
+    data: { status },
+  });
+  if (count === 0) throw ApiError.notFound('None of those enquiries still exist.');
+  sendData(res, { ids, status, count });
+}
+
+export async function bulkDeleteEnquiries(req, res) {
+  const { ids } = req.body;
+  const { count } = await prisma.enquiry.deleteMany({ where: { id: { in: ids } } });
+  if (count === 0) throw ApiError.notFound('None of those enquiries still exist.');
+  sendData(res, { ids, count });
 }

@@ -23,6 +23,27 @@ export const paginationQuery = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(12),
 });
 
+/**
+ * Free-text search shared by the admin lists. Blank becomes undefined so an
+ * empty search box is the same as no filter rather than matching everything.
+ */
+export const searchQuery = z
+  .string()
+  .trim()
+  .max(120)
+  .optional()
+  .transform((v) => (v === '' ? undefined : v));
+
+/**
+ * Body for the bulk endpoints. Capped at one page of results — a bulk action is
+ * meant for what the admin can see and select, not an unbounded table sweep.
+ */
+export const bulkIdsSchema = z.object({
+  ids: z.array(objectId).min(1, 'Select at least one item.').max(100),
+});
+
+export const bulkStatusSchema = bulkIdsSchema.extend({ status: statusEnum });
+
 export const booleanish = z
   .union([z.boolean(), z.enum(['true', 'false'])])
   .transform((v) => v === true || v === 'true');

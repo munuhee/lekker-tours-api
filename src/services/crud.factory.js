@@ -24,6 +24,13 @@ export function createCrudControllers({
   titleField = 'title',
   buildFilter = () => ({}),
   defaultSort = [{ order: 'asc' }, { createdAt: 'desc' }],
+  /**
+   * Columns `?q=` searches, as a case-insensitive substring. Empty disables
+   * search for the resource rather than silently ignoring the parameter.
+   */
+  searchFields = [],
+  /** Sort keys the admin list may request, mapped to Prisma orderBy clauses. */
+  sorts = {},
   include = null,
   serializer = serialize,
   revalidateTags = () => [],
@@ -36,10 +43,18 @@ export function createCrudControllers({
     if (publishedOnly) where.status = 'published';
     else if (query.status) where.status = query.status;
 
+    // Substring rather than full-text, matching the tour service: partial words
+    // match as the admin types instead of only on word boundaries.
+    if (query.q && searchFields.length > 0) {
+      where.OR = searchFields.map((field) => ({
+        [field]: { contains: query.q, mode: 'insensitive' },
+      }));
+    }
+
     const [items, total] = await Promise.all([
       delegate.findMany({
         where,
-        orderBy: defaultSort,
+        orderBy: sorts[query.sort] ?? defaultSort,
         skip: (page - 1) * limit,
         take: limit,
         ...(include ? { include } : {}),
@@ -122,6 +137,46 @@ export function createCrudControllers({
       const doc = await delegate.delete({ where: { id: req.params.id } });
       await revalidate(revalidateTags(doc));
       sendData(res, { id: req.params.id });
+    },
+
+    /* ---------- bulk ---------- */
+
+    /**
+     * Publishing or archiving a batch one request at a time made the admin wait
+     * through N round trips and could half-finish. These apply to the whole set
+     * or not at all, and report back which ids actually changed so the client
+     * can reconcile without a full reload.
+     */
+    async bulkStatus(req, res) {
+      const { ids, status } = req.body;
+
+      // Fetch first: the response needs the affected rows for revalidation, and
+      // updateMany returns only a count.
+      const existing = await delegate.findMany({ where: { id: { in: ids } } });
+      if (existing.length === 0) throw notFound();
+
+      await delegate.updateMany({ where: { id: { in: ids } }, data: { status } });
+
+      const tags = new Set();
+      for (const doc of existing) for (const tag of revalidateTags(doc)) tags.add(tag);
+      await revalidate([...tags]);
+
+      sendData(res, { ids: existing.map((doc) => doc.id), status, count: existing.length });
+    },
+
+    async bulkRemove(req, res) {
+      const { ids } = req.body;
+
+      const existing = await delegate.findMany({ where: { id: { in: ids } } });
+      if (existing.length === 0) throw notFound();
+
+      await delegate.deleteMany({ where: { id: { in: ids } } });
+
+      const tags = new Set();
+      for (const doc of existing) for (const tag of revalidateTags(doc)) tags.add(tag);
+      await revalidate([...tags]);
+
+      sendData(res, { ids: existing.map((doc) => doc.id), count: existing.length });
     },
   };
 }

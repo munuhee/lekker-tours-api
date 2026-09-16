@@ -165,3 +165,29 @@ export async function deleteTour(id) {
   await prisma.tour.delete({ where: { id } });
   return { id };
 }
+
+/**
+ * Bulk publish/unpublish and delete. The rows are read first so the caller can
+ * revalidate each affected slug — updateMany/deleteMany return only a count.
+ */
+export async function bulkSetTourStatus(ids, status) {
+  const existing = await prisma.tour.findMany({
+    where: { id: { in: ids } },
+    select: { id: true, slug: true },
+  });
+  if (existing.length === 0) throw ApiError.notFound('None of those tours still exist.');
+
+  await prisma.tour.updateMany({ where: { id: { in: ids } }, data: { status } });
+  return { ids: existing.map((t) => t.id), slugs: existing.map((t) => t.slug), status };
+}
+
+export async function bulkDeleteTours(ids) {
+  const existing = await prisma.tour.findMany({
+    where: { id: { in: ids } },
+    select: { id: true, slug: true },
+  });
+  if (existing.length === 0) throw ApiError.notFound('None of those tours still exist.');
+
+  await prisma.tour.deleteMany({ where: { id: { in: ids } } });
+  return { ids: existing.map((t) => t.id), slugs: existing.map((t) => t.slug) };
+}

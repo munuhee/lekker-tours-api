@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { imageSchema, statusEnum, paginationQuery } from './common.js';
+import { imageSchema, statusEnum, paginationQuery, searchQuery } from './common.js';
 
 const COUNTRIES = ['Kenya', 'Tanzania', 'Uganda', 'Rwanda', 'Zanzibar'];
 
@@ -52,4 +52,6 @@ export const destinationListQuery = paginationQuery.extend({
   country: z.enum(COUNTRIES).optional(),
   featured: z.enum(['true', 'false']).optional(),
   status: statusEnum.optional(),
+  q: searchQuery,
+  sort: z.enum(['order-asc', 'newest', 'name-asc', 'name-desc']).optional(),
 });

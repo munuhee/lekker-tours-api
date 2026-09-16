@@ -3,7 +3,7 @@ import * as ctrl from '../controllers/tour.controller.js';
 import { validate } from '../middleware/validate.js';
 import { requireAdmin } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
-import { idParam, slugParam } from '../validators/common.js';
+import { idParam, slugParam, bulkIdsSchema, bulkStatusSchema } from '../validators/common.js';
 import {
   createTourSchema,
   updateTourSchema,
@@ -35,6 +35,23 @@ router.patch(
   validate({ params: idParam, body: statusBodySchema }),
   ctrl.updateTourStatus
 );
+/* Bulk actions mirror the single-item permissions: status for any admin,
+   deletion for full admins only. Registered before `/:id` so that "bulk" is
+   never parsed as a tour id. */
+router.patch(
+  '/admin/tours/bulk/status',
+  requireAdmin,
+  validate({ body: bulkStatusSchema }),
+  ctrl.bulkTourStatus
+);
+router.delete(
+  '/admin/tours/bulk',
+  requireAdmin,
+  requireRole('admin'),
+  validate({ body: bulkIdsSchema }),
+  ctrl.bulkDeleteTours
+);
+
 /* Deletion is admin-only; editors may create and edit but not destroy. */
 router.delete(
   '/admin/tours/:id',

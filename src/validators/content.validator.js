@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { imageSchema, statusEnum, paginationQuery, objectId } from './common.js';
+import { imageSchema, statusEnum, paginationQuery, objectId, searchQuery } from './common.js';
 
 /* ---------- blog ---------- */
 
@@ -32,6 +32,8 @@ export const blogListQuery = paginationQuery.extend({
   tag: z.string().trim().optional(),
   featured: z.enum(['true', 'false']).optional(),
   status: statusEnum.optional(),
+  q: searchQuery,
+  sort: z.enum(['newest', 'oldest', 'title-asc', 'title-desc']).optional(),
 });
 
 /* ---------- testimonials ---------- */
@@ -55,6 +57,8 @@ export const updateTestimonialSchema = createTestimonialSchema.partial();
 export const testimonialListQuery = paginationQuery.extend({
   featured: z.enum(['true', 'false']).optional(),
   status: statusEnum.optional(),
+  q: searchQuery,
+  sort: z.enum(['newest', 'oldest', 'author-asc', 'rating-desc']).optional(),
 });
 
 /* ---------- FAQs ---------- */
@@ -72,4 +76,6 @@ export const updateFaqSchema = createFaqSchema.partial();
 export const faqListQuery = paginationQuery.extend({
   group: z.enum(['general', 'booking', 'travel', 'payment']).optional(),
   status: statusEnum.optional(),
+  q: searchQuery,
+  sort: z.enum(['order-asc', 'newest', 'question-asc']).optional(),
 });

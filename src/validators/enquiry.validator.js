@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { paginationQuery, objectId } from './common.js';
+import { paginationQuery, objectId, searchQuery } from './common.js';
 
 const EXPEDITION_INTERESTS = ['Big Five Safaris', 'Weekend Escape', 'East Africa Tours'];
 
@@ -40,6 +40,14 @@ export const createEnquirySchema = z.discriminatedUnion('type', [contactEnquiry,
 export const enquiryListQuery = paginationQuery.extend({
   status: z.enum(['new', 'read', 'responded', 'archived']).optional(),
   type: z.enum(['contact', 'booking']).optional(),
+  q: searchQuery,
+  sort: z.enum(['newest', 'oldest', 'name-asc']).optional(),
+});
+
+/** Bulk triage. Enquiry statuses are their own enum, not draft/published. */
+export const bulkEnquirySchema = z.object({
+  ids: z.array(objectId).min(1, 'Select at least one enquiry.').max(100),
+  status: z.enum(['new', 'read', 'responded', 'archived']),
 });
 
 export const updateEnquirySchema = z.object({

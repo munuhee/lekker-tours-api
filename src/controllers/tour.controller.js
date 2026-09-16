@@ -57,3 +57,17 @@ export async function deleteTour(req, res) {
   await revalidate(['tours', 'home']);
   sendData(res, result);
 }
+
+export async function bulkTourStatus(req, res) {
+  const { ids, status } = req.body;
+  const { ids: changed, slugs } = await tourService.bulkSetTourStatus(ids, status);
+  await revalidate(['tours', 'home', ...slugs.map((slug) => `tour:${slug}`)]);
+  sendData(res, { ids: changed, status, count: changed.length });
+}
+
+export async function bulkDeleteTours(req, res) {
+  const { ids } = req.body;
+  const { ids: removed, slugs } = await tourService.bulkDeleteTours(ids);
+  await revalidate(['tours', 'home', ...slugs.map((slug) => `tour:${slug}`)]);
+  sendData(res, { ids: removed, count: removed.length });
+}

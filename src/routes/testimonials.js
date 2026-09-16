@@ -4,7 +4,7 @@ import { createCrudControllers } from '../services/crud.factory.js';
 import { validate } from '../middleware/validate.js';
 import { requireAdmin } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
-import { idParam } from '../validators/common.js';
+import { idParam, bulkIdsSchema, bulkStatusSchema } from '../validators/common.js';
 import { statusBodySchema } from '../validators/tour.validator.js';
 import {
   createTestimonialSchema,
@@ -18,6 +18,13 @@ const ctrl = createCrudControllers({
   slugField: null, // testimonials have no public URL of their own
   titleField: null,
   defaultSort: [{ featured: 'desc' }, { order: 'asc' }, { createdAt: 'desc' }],
+  searchFields: ['authorName', 'quote'],
+  sorts: {
+    newest: [{ createdAt: 'desc' }],
+    oldest: [{ createdAt: 'asc' }],
+    'author-asc': [{ authorName: 'asc' }],
+    'rating-desc': [{ rating: 'desc' }, { createdAt: 'desc' }],
+  },
   buildFilter: (q) => (q.featured ? { featured: q.featured === 'true' } : {}),
   revalidateTags: () => ['testimonials', 'home'],
 });
@@ -41,6 +48,22 @@ router.patch(
   validate({ params: idParam, body: statusBodySchema }),
   ctrl.updateStatus
 );
+/* Bulk actions mirror the single-item permissions: status for any admin,
+   deletion for full admins only. */
+router.patch(
+  '/admin/testimonials/bulk/status',
+  requireAdmin,
+  validate({ body: bulkStatusSchema }),
+  ctrl.bulkStatus
+);
+router.delete(
+  '/admin/testimonials/bulk',
+  requireAdmin,
+  requireRole('admin'),
+  validate({ body: bulkIdsSchema }),
+  ctrl.bulkRemove
+);
+
 /* Deletion is admin-only; editors may create and edit but not destroy. */
 router.delete(
   '/admin/testimonials/:id',
