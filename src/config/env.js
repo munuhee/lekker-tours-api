@@ -34,6 +34,14 @@ export const env = {
     process.env.PUBLIC_API_URL ?? `http://localhost:${Number(process.env.PORT ?? 4000)}`
   ).replace(/\/+$/, ''),
 
+  // Domain the admin session cookie is scoped to. The web app and this API are
+  // separate hosts in production (lekkertours.com / api.lekkertours.com), and a
+  // cookie set on the API host alone is invisible to the web app's server-side
+  // session check — it reads its own host's cookie jar. Setting the registrable
+  // parent (.lekkertours.com) makes the cookie visible to both. Unset in
+  // development, where a host-only cookie on localhost is correct.
+  cookieDomain: process.env.COOKIE_DOMAIN || undefined,
+
   jwtSecret: required('JWT_SECRET'),
   jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? '7d',
 

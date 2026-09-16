@@ -28,6 +28,9 @@ const cookieOptions = {
   sameSite: env.isProduction ? 'none' : 'lax',
   secure: env.isProduction,
   path: '/',
+  // Scoped to the registrable parent in production (see config/env.js), so the
+  // web app's server-side session check can read it. Host-only otherwise.
+  ...(env.cookieDomain ? { domain: env.cookieDomain } : {}),
 };
 
 export function setAuthCookie(res, token) {
