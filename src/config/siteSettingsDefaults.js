@@ -41,6 +41,10 @@ export const SITE_SETTINGS_DEFAULTS = {
   footerBlurb:
     'Bringing the pulse of the African wilderness to life through expertly curated expeditions. Based in Nairobi, serving East Africa with excellence.',
 
+  // Empty by default: the homepage renders a placeholder until an admin sets a
+  // real video, rather than shipping someone else's footage as Lekker's own.
+  video: {},
+
   seo: {
     defaultTitle: 'Lekker Tours and Travel',
     defaultDescription:

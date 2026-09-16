@@ -59,6 +59,23 @@ export const updateSettingsSchema = z.object({
 
   footerBlurb: z.string().trim().max(600).optional(),
 
+  // A YouTube ID, not a URL: the homepage builds the embed src from it. Pasting
+  // a full watch URL is the obvious mistake, so reject anything outside the
+  // 11-character ID alphabet and say what was expected. Empty clears the video.
+  video: z
+    .object({
+      youtubeId: z
+        .string()
+        .trim()
+        .regex(
+          /^[A-Za-z0-9_-]{11}$/,
+          'Enter the 11-character YouTube video ID (the v= part of the URL), not the whole link.'
+        )
+        .or(z.literal(''))
+        .optional(),
+    })
+    .optional(),
+
   seo: z
     .object({
       defaultTitle: z.string().trim().max(70).optional(),
