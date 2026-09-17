@@ -300,11 +300,79 @@ model AdminUser {
   /// bcrypt digest. Never selected by default — see adminUsers.findByEmail().
   passwordHash String    @map("password_hash")
   name         String    @default("Administrator")
+  /// Legacy coarse role, kept in step with `role.name` by the user controller.
+  /// Still read by requireRole() on routes that have not moved to permission
+  /// checks, and by any JWT issued before the roles table existed.
   role         AdminRole @default(admin)
   lastLoginAt  DateTime? @map("last_login_at")
+
+  /// Nullable so the column could be backfilled before it was populated. A user
+  /// without a role holds no permissions at all.
+  roleId String? @map("role_id") @db.Uuid
+  roleRef Role?  @relation(fields: [roleId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  auditEntries AuditLog[]
+
+  @@index([roleId])
   @@map("admin_users")
+}
+
+/// A named set of permissions. Seeded with Administrator/Editor/Author/
+/// Enquiries (see config/permissions.js), then editable by anyone holding
+/// `roles.manage`.
+model Role {
+  id          String  @id @default(uuid()) @db.Uuid
+  name        String  @unique @db.VarChar(60)
+  description String  @default("") @db.VarChar(300)
+
+  /// Permission strings from config/permissions.js. A plain array rather than a
+  /// join table: the set is small, always read whole, and never queried by
+  /// individual permission.
+  permissions String[]
+
+  /// The Administrator role. Always holds every permission — including ones
+  /// added by a later release — and cannot be edited, renamed or deleted.
+  locked Boolean @default(false)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  users AdminUser[]
+
+  @@map("roles")
+}
+
+/// Append-only record of access changes: who did what to whom.
+///
+/// `actorId` is SetNull rather than Cascade — deleting an account must not
+/// erase the history of what that account did. actorEmail preserves the
+/// identity after the row is gone.
+model AuditLog {
+  id String @id @default(uuid()) @db.Uuid
+
+  actorId    String?    @map("actor_id") @db.Uuid
+  actor      AdminUser? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  actorEmail String     @map("actor_email")
+
+  /// e.g. 'user.create', 'user.role_change', 'role.update', 'user.delete'.
+  action String @db.VarChar(60)
+
+  /// What was acted on. Kept as loose text so a deleted target is still legible.
+  targetType  String? @map("target_type") @db.VarChar(40)
+  targetId    String? @map("target_id") @db.Uuid
+  targetLabel String? @map("target_label")
+
+  /// { before?, after? } — only the fields that changed. Never a password.
+  changes Json @default("{}")
+
+  ip String? @db.VarChar(64)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt])
+  @@index([actorId])
+  @@map("audit_log")
 }

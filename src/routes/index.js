@@ -11,6 +11,7 @@ import faqRoutes from './faqs.js';
 import enquiryRoutes from './enquiries.js';
 import settingsRoutes from './settings.js';
 import uploadRoutes from './uploads.js';
+import adminUserRoutes from './adminUsers.js';
 
 const router = Router();
 
@@ -32,5 +33,6 @@ router.use(faqRoutes);
 router.use(enquiryRoutes);
 router.use(settingsRoutes);
 router.use(uploadRoutes);
+router.use(adminUserRoutes);
 
 export default router;

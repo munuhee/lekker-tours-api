@@ -61,9 +61,14 @@ export async function requireAdmin(req, res, next) {
 
   // A token issued before the Postgres migration carries a 24-hex Mongo id,
   // which is not a valid UUID and would make Prisma throw rather than miss.
+  // The role is loaded with the user so permission checks read the current
+  // grant rather than whatever was true when the token was signed.
   let admin = null;
   try {
-    admin = await prisma.adminUser.findUnique({ where: { id: payload.sub } });
+    admin = await prisma.adminUser.findUnique({
+      where: { id: payload.sub },
+      include: { roleRef: true },
+    });
   } catch {
     admin = null;
   }
