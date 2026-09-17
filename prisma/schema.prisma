@@ -62,11 +62,32 @@ enum EnquiryType {
   booking
 }
 
+/// The enquiry lifecycle, in pipeline order. `new` means nobody owns it yet;
+/// everything from `assigned` onwards has an owner. `won` and `lost` are both
+/// terminal — kept distinct so the two outcomes can be counted separately,
+/// which a single `closed` state would have thrown away.
+///
+/// Replaces the old read/responded/archived mailbox states: `read` said only
+/// that someone had opened the record, which the auto-mark-read behaviour set
+/// even when nobody acted on it.
 enum EnquiryStatus {
   new
-  read
-  responded
-  archived
+  assigned
+  in_progress
+  quoted
+  won
+  lost
+}
+
+/// What an activity entry records. `note` is the only one a human writes
+/// freely; the rest are appended by the action that caused them.
+enum EnquiryEventType {
+  created
+  status_change
+  assigned
+  unassigned
+  note
+  contacted
 }
 
 enum AdminRole {
@@ -257,16 +278,93 @@ model Enquiry {
   /// { adults, children, infants } — totalGuests is computed on serialize.
   guests     Json?
 
+  /// Human-readable handle, e.g. "ENQ-2609-0042". Quoted at customers over the
+  /// phone and in email subjects, where a UUID is unusable. Nullable only so
+  /// the column could be backfilled; every row written since has one.
+  reference String? @unique @db.VarChar(20)
+
   status     EnquiryStatus @default(new)
   adminNotes String?       @map("admin_notes")
   source     String        @default("website")
+
+  /// Who owns it. SetNull rather than Cascade: removing a staff account must
+  /// return their enquiries to the unassigned pool, never delete them.
+  assigneeId String?    @map("assignee_id") @db.Uuid
+  assignee   AdminUser? @relation("EnquiryAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  assignedAt DateTime?  @map("assigned_at")
+
+  /// Last time someone recorded contact with the customer, and when they next
+  /// intend to. Together these drive the "needs attention" filter, which is the
+  /// one view that stops an enquiry going quiet for a week unnoticed.
+  lastContactedAt DateTime? @map("last_contacted_at")
+  followUpAt      DateTime? @map("follow_up_at")
+
+  /// Set once when the enquiry first reaches a terminal state, so time-to-close
+  /// can be measured without replaying the event log.
+  closedAt DateTime? @map("closed_at")
+
+  events EnquiryEvent[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@index([status, createdAt])
   @@index([type, createdAt])
+  @@index([assigneeId, status])
+  /// Drives the follow-up queue: overdue rows, soonest first.
+  @@index([followUpAt])
   @@map("enquiries")
+}
+
+/// One row per month, holding the last reference number issued for it.
+///
+/// Exists so a reference can be allocated in a single atomic UPDATE rather than
+/// read-then-guess: concurrent submissions otherwise compute the same next
+/// number and all but one are rejected by the unique index on Enquiry.reference.
+model EnquiryReferenceCounter {
+  /// 'YYMM', matching ENQ-YYMM-NNNN.
+  period  String @id @db.VarChar(4)
+  lastSeq Int    @default(0) @map("last_seq")
+
+  @@map("enquiry_reference_counters")
+}
+
+/// Append-only history for one enquiry. Nothing here is ever updated or
+/// deleted — correcting a mistake means adding another entry.
+///
+/// Separate from AuditLog on purpose: that table records access-control
+/// changes for security review, this one is the customer-facing story of an
+/// enquiry and is shown in the admin UI beside it.
+model EnquiryEvent {
+  id String @id @default(uuid()) @db.Uuid
+
+  enquiryId String  @map("enquiry_id") @db.Uuid
+  enquiry   Enquiry @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
+
+  type EnquiryEventType
+
+  /// Null for the `created` entry, which the public form triggers with nobody
+  /// signed in, and for anything a future automation appends.
+  actorId    String?    @map("actor_id") @db.Uuid
+  actor      AdminUser? @relation("EnquiryEventActor", fields: [actorId], references: [id], onDelete: SetNull)
+  /// Kept alongside the relation so a deleted account still reads as a name
+  /// rather than a blank, the same way audit_log keeps actor_email.
+  actorName  String?    @map("actor_name")
+
+  /// One line describing what happened, written at append time so the UI never
+  /// has to reconstruct wording from the type and the payload.
+  summary String @db.VarChar(300)
+
+  /// Free text for `note`; null otherwise.
+  note String?
+
+  /// Type-specific detail, e.g. { from: "new", to: "assigned" }.
+  meta Json @default("{}")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([enquiryId, createdAt])
+  @@map("enquiry_events")
 }
 
 /// Singleton. The `key` column is unique and always 'primary', which is what
@@ -315,6 +413,9 @@ model AdminUser {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   auditEntries AuditLog[]
+
+  assignedEnquiries Enquiry[]      @relation("EnquiryAssignee")
+  enquiryEvents     EnquiryEvent[] @relation("EnquiryEventActor")
 
   @@index([roleId])
   @@map("admin_users")

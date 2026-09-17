@@ -46,7 +46,16 @@ export const PERMISSION_GROUPS = [
     label: 'Enquiries',
     permissions: [
       { key: 'enquiries.view', label: 'View', hint: 'Read enquiries and customer contact details.' },
-      { key: 'enquiries.edit', label: 'Triage', hint: 'Change status and write internal notes.' },
+      {
+        key: 'enquiries.edit',
+        label: 'Triage',
+        hint: 'Move an enquiry through the pipeline, claim unassigned ones, and add notes.',
+      },
+      {
+        key: 'enquiries.assign',
+        label: 'Assign to others',
+        hint: 'Hand an enquiry to another member of staff. Claiming unassigned work needs only Triage.',
+      },
       { key: 'enquiries.delete', label: 'Delete', hint: 'Permanently remove enquiries.' },
     ],
   },
@@ -138,6 +147,6 @@ export const SYSTEM_ROLES = [
     name: 'Enquiries',
     description: 'Handles incoming enquiries only. Sees no content editing.',
     locked: false,
-    permissions: ['enquiries.view', 'enquiries.edit'],
+    permissions: ['enquiries.view', 'enquiries.edit', 'enquiries.assign'],
   },
 ];

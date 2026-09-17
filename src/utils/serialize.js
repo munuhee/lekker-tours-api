@@ -96,7 +96,23 @@ export function serializeEnquiry(row) {
   }
   delete out.tourId;
 
+  // Expanded when the query included it; otherwise the bare id is left for the
+  // client to resolve against its own staff list.
+  if (row.assignee) out.assignee = withIds(row.assignee);
+
+  if (row.events) out.events = row.events.map(withIds);
+
+  // Whether this enquiry is past its follow-up date, computed here so every
+  // consumer agrees rather than each re-deriving it from two fields.
+  out.isOverdue = Boolean(
+    row.followUpAt && row.followUpAt < new Date() && !['won', 'lost'].includes(row.status)
+  );
+
   return out;
+}
+
+export function serializeEnquiryEvent(row) {
+  return withIds(row);
 }
 
 /** BlogPost, Testimonial, FAQ and SiteSettings need ids and nothing more. */
