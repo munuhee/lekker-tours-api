@@ -23,7 +23,7 @@ function fieldLabel(meta) {
 
   const index = meta?.driverAdapterError?.cause?.constraint?.index;
   if (typeof index === 'string' && index) {
-    // "<table>_<column>_key" — drop the suffix, then the table prefix.
+    // "<table>_<column>_key": drop the suffix, then the table prefix.
     const withoutSuffix = index.replace(/_key$/, '');
     const table = meta?.driverAdapterError?.cause?.table;
     const column =
@@ -45,7 +45,7 @@ export function errorHandler(err, req, res, next) {
 
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     switch (err.code) {
-      // Unique constraint — most often a slug collision.
+      // Unique constraint: most often a slug collision.
       case 'P2002': {
         status = 409;
         code = 'DUPLICATE_KEY';
@@ -60,7 +60,7 @@ export function errorHandler(err, req, res, next) {
         code = 'NOT_FOUND';
         message = 'We could not find that record.';
         break;
-      // Foreign key violation — e.g. a tour pointing at a deleted destination.
+      // Foreign key violation, e.g. a tour pointing at a deleted destination.
       case 'P2003':
         status = 400;
         code = 'INVALID_REFERENCE';
@@ -80,7 +80,7 @@ export function errorHandler(err, req, res, next) {
   }
 
   // A payload that does not match the schema (wrong type, missing column).
-  // Zod catches most of these first, so reaching here means a real bug —
+  // Zod catches most of these first, so reaching here means a real bug,
   // log it, but don't leak Prisma's very verbose message to the client.
   if (err instanceof Prisma.PrismaClientValidationError) {
     console.error('[error] prisma validation:', err.message);

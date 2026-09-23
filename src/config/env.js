@@ -28,7 +28,7 @@ export const env = {
 
   // This service's own publicly reachable origin. It is baked into uploaded
   // image URLs, which are stored on content documents and rendered by the
-  // public site — so in production it must be the deployed hostname, not
+  // public site, so in production it must be the deployed hostname, not
   // localhost, or every uploaded image breaks.
   publicApiUrl: (
     process.env.PUBLIC_API_URL ?? `http://localhost:${Number(process.env.PORT ?? 4000)}`
@@ -37,7 +37,7 @@ export const env = {
   // Domain the admin session cookie is scoped to. The web app and this API are
   // separate hosts in production (lekkertours.com / api.lekkertours.com), and a
   // cookie set on the API host alone is invisible to the web app's server-side
-  // session check — it reads its own host's cookie jar. Setting the registrable
+  // session check, it reads its own host's cookie jar. Setting the registrable
   // parent (.lekkertours.com) makes the cookie visible to both. Unset in
   // development, where a host-only cookie on localhost is correct.
   cookieDomain: process.env.COOKIE_DOMAIN || undefined,

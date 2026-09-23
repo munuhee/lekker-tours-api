@@ -7,9 +7,9 @@ const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
  * Origin check on cookie-authenticated writes.
  *
  * This is the primary CSRF defence, not a belt-and-braces one. The session
- * cookie is sameSite:'none' in production — it has to be, because the web app
+ * cookie is sameSite:'none' in production. It has to be, because the web app
  * and this API are separate hosts and a 'lax' cookie would never be sent back
- * (see middleware/auth.js) — so the browser offers no cross-site protection of
+ * (see middleware/auth.js), so the browser offers no cross-site protection of
  * its own. Given this API exposes uploads and DELETEs, the declared origin is
  * verified explicitly on every state-changing request.
  *
@@ -34,7 +34,7 @@ export function verifyOrigin(req, res, next) {
     try {
       if (new URL(referer).origin === allowed) return next();
     } catch {
-      // Malformed Referer — treat as untrusted.
+      // Malformed Referer: treat as untrusted.
     }
   }
 

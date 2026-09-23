@@ -1,11 +1,11 @@
-// Lekker Tours — Postgres schema.
+// Lekker Tours, Postgres schema.
 //
 // Ported from the original Mongoose models. Two rules shaped the translation:
 //
 // 1. Anything the public site queries, filters or sorts by is a real column
 //    with a real type (and an index where the old schema had one).
-// 2. Anything only ever read and written as a whole blob — an itinerary, a
-//    gallery, an SEO block — stays JSON. Splitting those into child tables
+// 2. Anything only ever read and written as a whole blob, an itinerary, a
+//    gallery, an SEO block, stays JSON. Splitting those into child tables
 //    would buy nothing: nothing filters on them, and the admin UI PUTs the
 //    entire array back on every save.
 //
@@ -17,7 +17,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// Prisma 7 no longer accepts `url` here — the connection string is supplied by
+// Prisma 7 no longer accepts `url` here, the connection string is supplied by
 // prisma.config.ts for the CLI, and by the adapter in src/config/db.js for the
 // client at runtime.
 datasource db {
@@ -64,7 +64,7 @@ enum EnquiryType {
 
 /// The enquiry lifecycle, in pipeline order. `new` means nobody owns it yet;
 /// everything from `assigned` onwards has an owner. `won` and `lost` are both
-/// terminal — kept distinct so the two outcomes can be counted separately,
+/// terminal, kept distinct so the two outcomes can be counted separately,
 /// which a single `closed` state would have thrown away.
 ///
 /// Replaces the old read/responded/archived mailbox states: `read` said only
@@ -275,7 +275,7 @@ model Enquiry {
   tour       Tour?     @relation(fields: [tourId], references: [id], onDelete: SetNull)
   tourTitle  String?   @map("tour_title")
   travelDate DateTime? @map("travel_date") @db.Date
-  /// { adults, children, infants } — totalGuests is computed on serialize.
+  /// { adults, children, infants }, totalGuests is computed on serialize.
   guests     Json?
 
   /// Human-readable handle, e.g. "ENQ-2609-0042". Quoted at customers over the
@@ -330,7 +330,7 @@ model EnquiryReferenceCounter {
 }
 
 /// Append-only history for one enquiry. Nothing here is ever updated or
-/// deleted — correcting a mistake means adding another entry.
+/// deleted, correcting a mistake means adding another entry.
 ///
 /// Separate from AuditLog on purpose: that table records access-control
 /// changes for security review, this one is the customer-facing story of an
@@ -381,7 +381,7 @@ model SiteSettings {
   footerBlurb String @map("footer_blurb")
   seo         Json
 
-  /// { youtubeId?: string } — the film embedded on the homepage. Stored as
+  /// { youtubeId?: string }, the film embedded on the homepage. Stored as
   /// JSON rather than a bare column so further video options (a poster image,
   /// a caption) can be added without another migration.
   video       Json @default("{}")
@@ -395,7 +395,7 @@ model SiteSettings {
 model AdminUser {
   id           String    @id @default(uuid()) @db.Uuid
   email        String    @unique
-  /// bcrypt digest. Never selected by default — see adminUsers.findByEmail().
+  /// bcrypt digest. Never selected by default, see adminUsers.findByEmail().
   passwordHash String    @map("password_hash")
   name         String    @default("Administrator")
   /// Legacy coarse role, kept in step with `role.name` by the user controller.
@@ -434,8 +434,8 @@ model Role {
   /// individual permission.
   permissions String[]
 
-  /// The Administrator role. Always holds every permission — including ones
-  /// added by a later release — and cannot be edited, renamed or deleted.
+  /// The Administrator role. Always holds every permission, including ones
+  /// added by a later release, and cannot be edited, renamed or deleted.
   locked Boolean @default(false)
 
   createdAt DateTime @default(now()) @map("created_at")
@@ -448,7 +448,7 @@ model Role {
 
 /// Append-only record of access changes: who did what to whom.
 ///
-/// `actorId` is SetNull rather than Cascade — deleting an account must not
+/// `actorId` is SetNull rather than Cascade, deleting an account must not
 /// erase the history of what that account did. actorEmail preserves the
 /// identity after the row is gone.
 model AuditLog {
@@ -466,7 +466,7 @@ model AuditLog {
   targetId    String? @map("target_id") @db.Uuid
   targetLabel String? @map("target_label")
 
-  /// { before?, after? } — only the fields that changed. Never a password.
+  /// { before?, after? }, only the fields that changed. Never a password.
   changes Json @default("{}")
 
   ip String? @db.VarChar(64)

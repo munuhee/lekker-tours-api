@@ -8,7 +8,7 @@ import { prisma } from '../config/db.js';
  * created. Failures are logged and swallowed, matching how the revalidation
  * webhook treats a web app that is down.
  *
- * Never pass a password, a hash, or a whole user record as `changes` — only
+ * Never pass a password, a hash, or a whole user record as `changes`, only
  * the fields that changed. `recordChanges()` below is the safe way to build it.
  */
 export async function writeAudit(req, { action, target, changes = {} }) {

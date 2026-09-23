@@ -9,7 +9,7 @@ const baseFields = {
   phone: z.string().trim().max(40).optional(),
 };
 
-/** Contact form — mirrors the fields on lekkertours.com/contact. */
+/** Contact form, mirrors the fields on lekkertours.com/contact. */
 const contactEnquiry = z.object({
   type: z.literal('contact'),
   ...baseFields,
@@ -98,7 +98,7 @@ export const statusChangeSchema = z.object({
 });
 
 export const assignSchema = z.object({
-  /** Null unassigns. Omitted means "assign to me" — see the controller. */
+  /** Null unassigns. Omitted means "assign to me", see the controller. */
   assigneeId: objectId.nullable().optional(),
 });
 

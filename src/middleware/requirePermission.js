@@ -6,7 +6,7 @@ import { ALL_PERMISSIONS } from '../config/permissions.js';
  * table; requireRole() remains only for routes still on the coarse enum.
  *
  * Permissions are read from the role record loaded alongside the user in
- * requireAdmin — not from the JWT — so revoking access takes effect on the
+ * requireAdmin, not from the JWT, so revoking access takes effect on the
  * next request rather than whenever the token happens to expire.
  */
 export function permissionsFor(admin) {

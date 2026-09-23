@@ -2,7 +2,7 @@
  * Destination seed data.
  *
  * Park names, locations and seasonal windows are real. The descriptive copy is
- * written for this site — it is not taken from lekkertours.com, which has no
+ * written for this site; it is not taken from lekkertours.com, which has no
  * destination pages.
  */
 
@@ -50,7 +50,7 @@ export const destinations = [
         blurb:
           'Open grassland with the highest density of big cats in Kenya, and the stage for the Mara River crossings.',
         image: img('mara-lions-stalking.jpg', 'Lions moving through long grass in the Maasai Mara'),
-        bestTime: 'July – October',
+        bestTime: 'July - October',
         highlights: ['Mara River crossings', 'Resident lion prides', 'Balloon safaris at dawn'],
       },
       {
@@ -58,7 +58,7 @@ export const destinations = [
         blurb:
           'Famous for large, relaxed elephant families and uninterrupted views of Kilimanjaro across the border.',
         image: img('amboseli-elephant-kilimanjaro.jpg', 'Elephant on the savanna with Kilimanjaro behind'),
-        bestTime: 'June – October, January – February',
+        bestTime: 'June - October, January - February',
         highlights: ['Big tusker elephants', 'Kilimanjaro backdrop', 'Observation Hill'],
       },
       {
@@ -66,7 +66,7 @@ export const destinations = [
         blurb:
           "Kenya's largest protected area, red with dust, where elephants take their colour from the earth.",
         image: img('tsavo-elephants-road.jpg', 'Elephants walking through Tsavo scrub'),
-        bestTime: 'June – October',
+        bestTime: 'June - October',
         highlights: ['Red elephants', 'Mzima Springs', 'Lugard Falls'],
       },
       {
@@ -82,7 +82,7 @@ export const destinations = [
         blurb:
           'Semi-arid country north of the equator, home to species you will not see further south.',
         image: img('mara-giraffes.jpg', 'Giraffes standing in dry northern bush'),
-        bestTime: 'June – October',
+        bestTime: 'June - October',
         highlights: ['Grevy zebra and reticulated giraffe', 'Ewaso Ngiro river', 'Samburu culture'],
       },
       {
@@ -112,9 +112,9 @@ export const destinations = [
       {
         name: 'Diani & the Kenyan Coast',
         blurb:
-          'White sand, warm water and a reef offshore — the natural end to a week in the bush.',
+          'White sand, warm water and a reef offshore: the natural end to a week in the bush.',
         image: img('zanzibar-dhow-shore.jpg', 'Traditional sailing boat resting on a white sand beach'),
-        bestTime: 'December – March, July – October',
+        bestTime: 'December - March, July - October',
         highlights: ['Coral reef snorkelling', 'Dhow sailing', 'Swahili old towns'],
       },
     ],
@@ -147,7 +147,7 @@ export const destinations = [
         name: 'Serengeti National Park',
         blurb: 'Grassland to the horizon, holding the migration for most of the year.',
         image: img('serengeti-zebra-wildebeest.jpg', 'Zebra and wildebeest grazing together'),
-        bestTime: 'June – October, January – March',
+        bestTime: 'June - October, January - March',
         highlights: ['Migration herds', 'Seronera big cats', 'Balloon safaris'],
       },
       {
@@ -161,21 +161,21 @@ export const destinations = [
         name: 'Tarangire National Park',
         blurb: 'Baobab country along a river that draws enormous elephant herds in the dry months.',
         image: img('serengeti-antelope-herd.jpg', 'Antelope herd on open savanna'),
-        bestTime: 'June – October',
+        bestTime: 'June - October',
         highlights: ['Elephant herds', 'Ancient baobabs', 'Tree-climbing pythons'],
       },
       {
         name: 'Lake Manyara National Park',
         blurb: 'Groundwater forest below the Rift escarpment, known for tree-climbing lions.',
         image: img('nakuru-flamingo-group.jpg', 'Flamingos wading in shallow lake water'),
-        bestTime: 'June – October',
+        bestTime: 'June - October',
         highlights: ['Tree-climbing lions', 'Flamingos', 'Canopy walkway'],
       },
       {
         name: 'Zanzibar Archipelago',
         blurb: 'Spice islands off the Tanzanian coast, and the usual finish to a northern circuit.',
         image: img('zanzibar-dhow-sunset.jpg', 'A dhow under sail at sunset off Zanzibar'),
-        bestTime: 'June – October, December – February',
+        bestTime: 'June - October, December - February',
         highlights: ['Stone Town', 'Nungwi and Kendwa beaches', 'Spice farms'],
       },
     ],
@@ -208,14 +208,14 @@ export const destinations = [
         name: 'Bwindi Impenetrable Forest',
         blurb: 'Ancient montane forest sheltering roughly half the remaining mountain gorillas.',
         image: img('gorilla-bwindi-foliage.jpg', 'Gorilla among dense green foliage in Bwindi'),
-        bestTime: 'June – August, December – February',
+        bestTime: 'June - August, December - February',
         highlights: ['Gorilla trekking', 'Batwa cultural trails', 'Forest birding'],
       },
       {
         name: 'Queen Elizabeth National Park',
         blurb: 'Crater lakes, the Kazinga Channel, and the tree-climbing lions of Ishasha.',
         image: img('serengeti-lions-resting.jpg', 'Lions resting in the shade'),
-        bestTime: 'June – September',
+        bestTime: 'June - September',
         highlights: ['Kazinga Channel boat safari', 'Ishasha lions', 'Crater drives'],
       },
       {
@@ -229,7 +229,7 @@ export const destinations = [
         name: 'Murchison Falls National Park',
         blurb: 'The Nile forced through a seven-metre gap, with game-rich plains on either bank.',
         image: img('tsavo-elephant-field-alt.jpg', 'Elephant grazing on open plains'),
-        bestTime: 'December – February, June – September',
+        bestTime: 'December - February, June - September',
         highlights: ['Boat to the falls', 'Delta game drives', 'Rhino tracking en route'],
       },
     ],
@@ -262,21 +262,21 @@ export const destinations = [
         name: 'Volcanoes National Park',
         blurb: 'Bamboo and hagenia forest on the Virunga slopes, home to habituated gorilla families.',
         image: img('gorilla-silverback-rwanda.jpg', 'Silverback gorilla in mountain forest'),
-        bestTime: 'June – September, December – February',
+        bestTime: 'June - September, December - February',
         highlights: ['Gorilla trekking', 'Golden monkeys', 'Dian Fossey memorial hike'],
       },
       {
         name: 'Nyungwe Forest',
         blurb: 'Montane rainforest with a suspended canopy walkway and thirteen primate species.',
         image: img('gorilla-bwindi-feeding.jpg', 'Primate feeding in montane rainforest'),
-        bestTime: 'June – September',
+        bestTime: 'June - September',
         highlights: ['Canopy walkway', 'Chimpanzee tracking', 'Waterfall trails'],
       },
       {
         name: 'Akagera National Park',
         blurb: 'Rwanda\'s savanna park in the east, restocked with lion and rhino and now a Big Five reserve.',
         image: img('serengeti-zebra-herd.jpg', 'Zebra herd on open grassland'),
-        bestTime: 'June – September',
+        bestTime: 'June - September',
         highlights: ['Big Five game drives', 'Lake Ihema boat safari', 'Behind-the-scenes conservation'],
       },
     ],
@@ -316,7 +316,7 @@ export const destinations = [
         name: 'Nungwi & Kendwa',
         blurb: 'The north tip, where the tide barely retreats and the sunsets face west.',
         image: img('zanzibar-dhow-sunset.jpg', 'Dhow silhouetted against a Zanzibar sunset'),
-        bestTime: 'June – October, December – February',
+        bestTime: 'June - October, December - February',
         highlights: ['Swimming at all tides', 'Sunset dhow cruises', 'Diving off Mnemba'],
       },
       {

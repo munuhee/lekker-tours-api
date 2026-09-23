@@ -14,13 +14,13 @@ export function signAdminToken(admin) {
 /**
  * In development the web app and the API share a host (localhost:3000 ->
  * :4000), so 'lax' holds and works without HTTPS. In production they are
- * separate hosts — lekkertours.com and api.lekkertours.com — which the browser
+ * separate hosts, lekkertours.com and api.lekkertours.com, which the browser
  * treats as cross-site, and a 'lax' cookie set by the API is never sent back
  * from the web app. That silently breaks admin sign-in: the login succeeds, the
  * cookie is dropped, and every subsequent request looks unauthenticated.
  *
  * 'none' is what permits the cross-site send, and browsers only accept it
- * alongside Secure — which production already sets. The CSRF protection this
+ * alongside Secure, which production already sets. The CSRF protection this
  * gives up is covered by the explicit Origin check in middleware/csrf.js.
  */
 const cookieOptions = {

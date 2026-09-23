@@ -10,7 +10,7 @@ import { serialize, serializeMany } from '../utils/serialize.js';
  * and edited through identical CRUD verbs. Rather than four near-identical
  * service+controller pairs, they are generated from one description.
  *
- * Tours are deliberately NOT built this way — the category subtype fields,
+ * Tours are deliberately NOT built this way, the category subtype fields,
  * related-tour lookups and price filtering earn their own hand-written service.
  *
  * `defaultSort` and the objects returned by `buildFilter` are Prisma clauses,

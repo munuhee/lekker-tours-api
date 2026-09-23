@@ -22,8 +22,8 @@ export const SITE_SETTINGS_DEFAULTS = {
   values: [],
 
   contact: {
-    phone: '+254 705 356 161',
-    whatsapp: '+254 705 356 161',
+    phone: '+254 182 308 871',
+    whatsapp: '+254 182 308 872',
     email: 'lekkertours@gmail.com',
     addressLine: 'Agip House, Haile Selassie Avenue',
     poBox: 'P.O Box 13689-00200',

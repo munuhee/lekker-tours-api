@@ -18,7 +18,7 @@ async function start() {
     await connectDatabase();
   } catch (err) {
     console.error('[startup] could not reach PostgreSQL:', err.message);
-    console.error(`[startup] tried ${redact(env.databaseUrl)} — is the database running?`);
+    console.error(`[startup] tried ${redact(env.databaseUrl)}, is the database running?`);
     console.error('[startup] to start one locally: docker compose up -d');
     process.exit(1);
   }

@@ -19,7 +19,7 @@ import {
 
 const router = Router();
 
-// Public write endpoint — keep spam submissions bounded.
+// Public write endpoint: keep spam submissions bounded.
 const submitLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   limit: 20,
@@ -94,7 +94,7 @@ router.patch(
 /* Claiming unowned work needs only triage; the controller rejects a claim on an
  * enquiry someone else already holds. Handing one to another person is the
  * management action, so the body carrying an explicit assigneeId is what
- * `enquiries.assign` guards — checked in the controller, since the two cases
+ * `enquiries.assign` guards, checked in the controller, since the two cases
  * share a route. */
 router.patch(
   '/admin/enquiries/:id/assignee',

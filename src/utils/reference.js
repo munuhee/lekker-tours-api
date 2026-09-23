@@ -9,7 +9,7 @@ import { prisma } from '../config/db.js';
  *
  * The sequence restarts each month, so NNNN is "the 42nd enquiry this month",
  * not a global count. Four digits is ~330 enquiries a day before it overflows;
- * if that day ever comes, widen the padding — the column holds 20 characters.
+ * if that day ever comes, widen the padding, the column holds 20 characters.
  */
 const PREFIX = 'ENQ';
 
@@ -28,7 +28,7 @@ function format(period, seq) {
  *
  * An earlier version read the highest existing reference and added one. That
  * loses submissions under load: concurrent callers all read the same value,
- * all compute the same next one, and the unique index rejects every loser —
+ * all compute the same next one, and the unique index rejects every loser,
  * and retrying does not help, because each retry re-reads the same number. A
  * burst of ten simultaneous submissions reliably dropped one.
  *

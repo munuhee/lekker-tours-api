@@ -14,12 +14,12 @@ import {
 
 const router = Router();
 
-/* Public — published tours only. */
+/* Public: published tours only. */
 router.get('/tours', validate({ query: tourListQuery }), ctrl.listPublicTours);
 router.get('/tours/:slug', validate({ params: slugParam }), ctrl.getPublicTour);
 router.get('/tours/:slug/related', validate({ params: slugParam }), ctrl.getRelated);
 
-/* Admin — includes drafts. */
+/* Admin: includes drafts. */
 router.get('/admin/tours', requireAdmin, validate({ query: adminTourListQuery }), ctrl.listAdminTours);
 
 /* Bulk actions mirror the single-item permissions: status for any admin,

@@ -5,7 +5,7 @@ import { SYSTEM_ROLES } from '../config/permissions.js';
  * Creates the starter roles and backfills any account that predates them.
  *
  * Safe to re-run. Existing roles are matched by name and have their permissions
- * refreshed — except a locked role, whose stored array is irrelevant because
+ * refreshed, except a locked role, whose stored array is irrelevant because
  * permissionsFor() grants it everything.
  */
 async function run() {
@@ -29,7 +29,7 @@ async function run() {
       });
       console.log(`[seed:roles] refreshed ${definition.name}`);
     } else {
-      console.log(`[seed:roles] ${definition.name} already exists — leaving it untouched.`);
+      console.log(`[seed:roles] ${definition.name} already exists, leaving it untouched.`);
     }
   }
 

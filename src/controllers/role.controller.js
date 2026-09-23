@@ -11,7 +11,7 @@ function publicShape(role) {
     name: role.name,
     description: role.description,
     // A locked role holds everything by definition, including permissions
-    // added after the row was written — report that, not the stored array.
+    // added after the row was written: report that, not the stored array.
     permissions: role.locked ? ALL_PERMISSIONS : role.permissions,
     locked: role.locked,
     userCount: role._count?.users ?? undefined,

@@ -35,7 +35,7 @@ export const searchQuery = z
   .transform((v) => (v === '' ? undefined : v));
 
 /**
- * Body for the bulk endpoints. Capped at one page of results — a bulk action is
+ * Body for the bulk endpoints. Capped at one page of results, a bulk action is
  * meant for what the admin can see and select, not an unbounded table sweep.
  */
 export const bulkIdsSchema = z.object({

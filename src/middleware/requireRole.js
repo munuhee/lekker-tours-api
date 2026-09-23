@@ -5,7 +5,7 @@ import { ApiError } from '../utils/ApiError.js';
  *
  * `requireAdmin` only proves that *some* valid account is signed in. The
  * AdminUser schema has always carried role: 'admin' | 'editor', and the JWT has
- * always carried it, but nothing enforced it — so an editor could delete tours
+ * always carried it, but nothing enforced it, so an editor could delete tours
  * and rewrite site settings. Mount this after requireAdmin:
  *
  *   router.delete('/admin/tours/:id', requireAdmin, requireRole('admin'), ...)

@@ -4,7 +4,7 @@
  * The web app is a separate repo (lekker-tours-web) whose TypeScript types read
  * `_id` on every interface and expect three fields that used to be Mongoose
  * virtuals. Postgres has no equivalent of either, so both are reconstructed
- * here — this module is the entire compatibility layer between the new storage
+ * here, this module is the entire compatibility layer between the new storage
  * and the unchanged wire contract.
  *
  * Every controller response goes through one of these functions. Returning a
@@ -39,7 +39,7 @@ function withIds(row) {
   return out;
 }
 
-/** `4 Days / 3 Nights` — was tourSchema.virtual('durationLabel'). */
+/** `4 Days / 3 Nights`, was tourSchema.virtual('durationLabel'). */
 function durationLabel(durationDays, durationNights) {
   const nights = durationNights ?? Math.max(0, durationDays - 1);
   const dayWord = durationDays === 1 ? 'Day' : 'Days';
@@ -81,7 +81,7 @@ export function serializeEnquiry(row) {
 
   const out = withIds(row);
 
-  // Was enquirySchema.virtual('totalGuests') — null for contact submissions.
+  // Was enquirySchema.virtual('totalGuests'), null for contact submissions.
   if (row.type !== 'booking') {
     out.totalGuests = null;
   } else {

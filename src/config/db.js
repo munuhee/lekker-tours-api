@@ -7,7 +7,7 @@ import { env } from './env.js';
  * save, and a fresh client per reload would leak a connection pool each time,
  * so the instance is cached on globalThis in development.
  *
- * Prisma 7 requires a driver adapter — `new PrismaClient()` with no options
+ * Prisma 7 requires a driver adapter: `new PrismaClient()` with no options
  * throws. The connection string lives here for the runtime client and in
  * prisma.config.ts for the CLI; both read DATABASE_URL.
  */

@@ -54,7 +54,7 @@ router.post('/admin/uploads', requireAdmin, (req, res, next) => {
     if (!req.file) return next(ApiError.badRequest('No image was received.'));
 
     // The returned URL is persisted onto content documents and rendered on the
-    // public site, so it must be the API's PUBLIC origin — not localhost, which
+    // public site, so it must be the API's PUBLIC origin, not localhost, which
     // would break every uploaded image once this is deployed.
     sendData(
       res,

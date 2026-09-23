@@ -4,7 +4,7 @@ import { prisma } from '../config/db.js';
  * The enquiry activity log.
  *
  * Every entry is written inside the same transaction as the change it
- * describes — unlike writeAudit(), which is deliberately non-fatal. The
+ * describes, unlike writeAudit(), which is deliberately non-fatal. The
  * difference is what the two are for: the audit log is a security record that
  * must not block an admin action, whereas this timeline *is* the enquiry's
  * history and an enquiry whose status moved without a matching entry is simply
@@ -40,7 +40,7 @@ export function actorOf(req) {
 }
 
 /**
- * Append one entry. Pass `tx` to join the caller's transaction — every status
+ * Append one entry. Pass `tx` to join the caller's transaction, every status
  * change, assignment and note does, so the entry and the change land together
  * or not at all.
  */

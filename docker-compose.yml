@@ -9,7 +9,7 @@
 #   docker compose run --rm api npm run seed:admin
 #   docker compose run --rm api npm run seed
 #
-# The credentials here are development-only — a deployed database needs real
+# The credentials here are development-only, a deployed database needs real
 # secrets, and JWT_SECRET below must not be reused.
 
 services:
@@ -41,7 +41,7 @@ services:
     environment:
       NODE_ENV: development
       PORT: 4000
-      # `postgres` is the compose service name — inside the network it resolves
+      # `postgres` is the compose service name, inside the network it resolves
       # to the database container, not localhost.
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/lekker_tours?schema=public
       WEB_ORIGIN: ${WEB_ORIGIN:-http://localhost:3000}

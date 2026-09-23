@@ -1,14 +1,14 @@
 /**
  * Tour seed data.
  *
- * PROVENANCE — read before editing:
+ * PROVENANCE, read before editing:
  *
  * The six packages marked `sourcedFromLekker: true` use the real names and the
  * real "from" prices published on lekkertours.com (Safari Expeditions and
  * Weekend Escapes pages), together with their published one-line descriptions.
  *
- * Everything else — day-by-day itineraries, inclusions, exclusions, durations,
- * group sizes, ratings, and every additional tour — is written for this site.
+ * Everything else (day-by-day itineraries, inclusions, exclusions, durations,
+ * group sizes, ratings, and every additional tour) is written for this site.
  * Parks, routes, seasons and travel times are real and researched, but the
  * commercial detail is illustrative and MUST be reviewed against what Lekker
  * actually sells before this site takes a booking.
@@ -37,7 +37,7 @@ const STANDARD_EXCLUSIONS = [
 
 export const tours = [
   /* ===================================================================
-   * 1–3. SAFARI EXPEDITIONS — names and prices from lekkertours.com
+   * 1-3. SAFARI EXPEDITIONS: names and prices from lekkertours.com
    * =================================================================== */
   {
     sourcedFromLekker: true,
@@ -95,7 +95,7 @@ export const tours = [
         day: 3,
         title: 'Mara River and the wider reserve',
         description:
-          'North towards the Mara River, where hippo and crocodile hold the pools year-round and — in season — the herds gather to cross. Optional balloon flight at dawn, arranged on request.',
+          'North towards the Mara River, where hippo and crocodile hold the pools year-round and, in season, the herds gather to cross. Optional balloon flight at dawn, arranged on request.',
         activities: ['Mara River drive', 'Hippo pools', 'Optional balloon safari at extra cost'],
         meals: ['Breakfast', 'Lunch', 'Dinner'],
         accommodation: 'Tented camp, Mara',
@@ -246,7 +246,7 @@ export const tours = [
       },
       {
         day: 2,
-        title: 'Amboseli — elephants and the mountain',
+        title: 'Amboseli: elephants and the mountain',
         description:
           'Dawn drive for the clearest mountain views of the day, then a break through the hard midday light and back out for the afternoon.',
         activities: ['Sunrise drive', 'Midday editing session', 'Afternoon drive'],
@@ -264,7 +264,7 @@ export const tours = [
       },
       {
         day: 4,
-        title: 'Mara — big cats in low light',
+        title: 'Mara: big cats in low light',
         description:
           'Two drives at either end of the day working the resident prides and cheetah territories, with the vehicle positioned for backlight and dust.',
         activities: ['Sunrise drive', 'Afternoon and dusk drive'],
@@ -273,7 +273,7 @@ export const tours = [
       },
       {
         day: 5,
-        title: 'Mara — the wider reserve',
+        title: 'Mara: the wider reserve',
         description:
           'A full day deeper into the reserve with a picnic lunch, working the river, the crossings and the open plains.',
         activities: ['Full-day drive', 'Mara River', 'Optional dawn balloon flight at extra cost'],
@@ -297,7 +297,7 @@ export const tours = [
   },
 
   /* ===================================================================
-   * 4–6. WEEKEND ESCAPES — names and prices from lekkertours.com
+   * 4-6. WEEKEND ESCAPES: names and prices from lekkertours.com
    * =================================================================== */
   {
     sourcedFromLekker: true,
@@ -331,7 +331,7 @@ export const tours = [
     itinerary: [
       {
         day: 1,
-        title: 'Friday — into the bush',
+        title: 'Friday: into the bush',
         description:
           'Afternoon pickup in Nairobi and private transfer to camp, arriving for sundowners and dinner under the stars.',
         activities: ['Private transfer from Nairobi', 'Sundowners', 'Dinner at camp'],
@@ -340,7 +340,7 @@ export const tours = [
       },
       {
         day: 2,
-        title: 'Saturday — full day, Big Five focus',
+        title: 'Saturday: full day, Big Five focus',
         description:
           'Dawn until dusk in the reserve with a picnic lunch, working systematically towards lion, leopard, elephant, buffalo and rhino.',
         activities: ['Sunrise game drive', 'Picnic lunch', 'Afternoon game drive'],
@@ -349,7 +349,7 @@ export const tours = [
       },
       {
         day: 3,
-        title: 'Sunday — morning drive and return',
+        title: 'Sunday: morning drive and return',
         description: 'A final morning drive, brunch, and back to Nairobi by early evening.',
         activities: ['Morning game drive', 'Return transfer'],
         meals: ['Breakfast'],
@@ -369,7 +369,7 @@ export const tours = [
     category: 'WeekendEscape',
     summary: 'The golden hour, premium sundowner locations and relaxed wildlife viewing.',
     description:
-      'The gentlest of our weekend trips. Later starts, unhurried drives, and two evenings given over to the best sundowner spots we know. Built for people who want the bush without a 5am alarm — couples, and anyone coming off a hard week in the city.',
+      'The gentlest of our weekend trips. Later starts, unhurried drives, and two evenings given over to the best sundowner spots we know. Built for people who want the bush without a 5am alarm: couples, and anyone coming off a hard week in the city.',
     priceFrom: 200,
     durationDays: 3,
     durationNights: 2,
@@ -394,7 +394,7 @@ export const tours = [
     itinerary: [
       {
         day: 1,
-        title: 'Friday — arrival and first sundowner',
+        title: 'Friday: arrival and first sundowner',
         description:
           'Mid-afternoon transfer from Nairobi, arriving in time to settle in before heading out to a viewpoint for sundowners.',
         activities: ['Transfer from Nairobi', 'Evening drive to a sundowner viewpoint'],
@@ -403,7 +403,7 @@ export const tours = [
       },
       {
         day: 2,
-        title: 'Saturday — unhurried in the bush',
+        title: 'Saturday: unhurried in the bush',
         description:
           'A relaxed morning drive after a proper breakfast, the middle of the day at camp, and a long afternoon drive finishing with a bush dinner.',
         activities: ['Late morning game drive', 'Afternoon at camp', 'Evening drive and bush dinner'],
@@ -412,7 +412,7 @@ export const tours = [
       },
       {
         day: 3,
-        title: 'Sunday — last morning',
+        title: 'Sunday: last morning',
         description: 'A gentle final drive, brunch at camp, and the road home.',
         activities: ['Morning game drive', 'Return transfer to Nairobi'],
         meals: ['Breakfast'],
@@ -432,7 +432,7 @@ export const tours = [
     category: 'WeekendEscape',
     summary: 'A deep dive into the bush in under 48 hours, with guided walks and off-road tracking.',
     description:
-      'The most active of the weekend trips. Two nights, but the time is spent on foot and off-road rather than on a main circuit — walking with a ranger, reading tracks, and following what you find rather than what is on the map. A reasonable level of fitness helps.',
+      'The most active of the weekend trips. Two nights, but the time is spent on foot and off-road rather than on a main circuit: walking with a ranger, reading tracks, and following what you find rather than what is on the map. A reasonable level of fitness helps.',
     priceFrom: 300,
     durationDays: 3,
     durationNights: 2,
@@ -457,7 +457,7 @@ export const tours = [
     itinerary: [
       {
         day: 1,
-        title: 'Friday — in and straight out',
+        title: 'Friday: in and straight out',
         description:
           'Early afternoon departure from Nairobi, arriving in the conservancy for a first walk before dark and a night drive after dinner.',
         activities: ['Transfer from Nairobi', 'Short orientation walk', 'Night drive'],
@@ -466,7 +466,7 @@ export const tours = [
       },
       {
         day: 2,
-        title: 'Saturday — on foot and off-road',
+        title: 'Saturday: on foot and off-road',
         description:
           'A long walk at first light with a ranger, the heat of the day at camp, and an off-road afternoon tracking whatever the morning turned up.',
         activities: ['Morning bush walk', 'Off-road tracking drive', 'Sundowners'],
@@ -475,7 +475,7 @@ export const tours = [
       },
       {
         day: 3,
-        title: 'Sunday — final walk and out',
+        title: 'Sunday: final walk and out',
         description: 'A short walk after breakfast, then break camp and return to Nairobi.',
         activities: ['Morning walk', 'Return transfer'],
         meals: ['Breakfast'],
@@ -490,16 +490,16 @@ export const tours = [
   },
 
   /* ===================================================================
-   * 7+. AUTHORED FOR THIS SITE — not on lekkertours.com
+   * 7+. AUTHORED FOR THIS SITE: not on lekkertours.com
    * =================================================================== */
   {
-    title: 'Classic Kenya — Mara, Nakuru & Amboseli',
+    title: 'Classic Kenya: Mara, Nakuru & Amboseli',
     slug: 'classic-kenya-mara-nakuru-amboseli',
     category: 'SafariExpedition',
     summary:
       'The three parks that made Kenya famous, in one unhurried loop from Nairobi.',
     description:
-      'Eight days covering the Maasai Mara, Lake Nakuru and Amboseli — grassland, Rift Valley lake and the country beneath Kilimanjaro. This is the itinerary we recommend most often to first-time visitors, because it shows the range of Kenyan landscape rather than the same plains three times.',
+      'Eight days covering the Maasai Mara, Lake Nakuru and Amboseli: grassland, Rift Valley lake and the country beneath Kilimanjaro. This is the itinerary we recommend most often to first-time visitors, because it shows the range of Kenyan landscape rather than the same plains three times.',
     priceFrom: 1850,
     durationDays: 8,
     durationNights: 7,
@@ -527,7 +527,7 @@ export const tours = [
     itinerary: [
       { day: 1, title: 'Nairobi to the Maasai Mara', description: 'Transfer via the Rift Valley escarpment, arriving for an afternoon drive.', activities: ['Escarpment viewpoint', 'Afternoon game drive'], meals: ['Lunch', 'Dinner'], accommodation: 'Tented camp, Mara' },
       { day: 2, title: 'Full day in the Mara', description: 'Dawn to dusk in the reserve with a picnic lunch.', activities: ['Sunrise drive', 'Picnic lunch', 'Afternoon drive'], meals: ['Breakfast', 'Lunch', 'Dinner'], accommodation: 'Tented camp, Mara' },
-      { day: 3, title: 'Mara River and the northern plains', description: 'North to the river and the crossing points, with hippo pools and — in season — the herds.', activities: ['Mara River drive', 'Optional balloon flight'], meals: ['Breakfast', 'Lunch', 'Dinner'], accommodation: 'Tented camp, Mara' },
+      { day: 3, title: 'Mara River and the northern plains', description: 'North to the river and the crossing points, with hippo pools and, in season, the herds.', activities: ['Mara River drive', 'Optional balloon flight'], meals: ['Breakfast', 'Lunch', 'Dinner'], accommodation: 'Tented camp, Mara' },
       { day: 4, title: 'Mara to Lake Nakuru', description: 'Morning drive, then north-east to the Rift Valley lake and its rhino sanctuary.', activities: ['Morning drive', 'Transfer to Nakuru', 'Lakeshore drive'], meals: ['Breakfast', 'Lunch', 'Dinner'], accommodation: 'Lodge, Nakuru' },
       { day: 5, title: 'Nakuru to Amboseli', description: 'A long transfer south around Nairobi to Amboseli, arriving for the afternoon.', activities: ['Cross-country transfer', 'Afternoon game drive'], meals: ['Breakfast', 'Lunch', 'Dinner'], accommodation: 'Lodge, Amboseli' },
       { day: 6, title: 'Amboseli and Kilimanjaro', description: 'Dawn drive for the clearest mountain views, and an afternoon among the elephant families.', activities: ['Sunrise drive', 'Observation Hill', 'Afternoon drive'], meals: ['Breakfast', 'Lunch', 'Dinner'], accommodation: 'Lodge, Amboseli' },
@@ -542,13 +542,13 @@ export const tours = [
     order: 7,
   },
   {
-    title: 'Great Migration — Mara River Crossings',
+    title: 'Great Migration: Mara River Crossings',
     slug: 'great-migration-mara-river-crossings',
     category: 'SafariExpedition',
     summary:
       'Five days positioned on the Mara River during crossing season, when the herds come north.',
     description:
-      'Timed for the crossing months and based close to the river, so you can be in position early and wait. Crossings cannot be promised — the herds move on their own schedule and sometimes not at all — but being camped near the crossing points, with a guide who reads the build-up, is the difference between seeing one and hearing about it.',
+      'Timed for the crossing months and based close to the river, so you can be in position early and wait. Crossings cannot be promised, since the herds move on their own schedule and sometimes not at all, but being camped near the crossing points, with a guide who reads the build-up, is the difference between seeing one and hearing about it.',
     priceFrom: 1650,
     durationDays: 5,
     durationNights: 4,
@@ -588,7 +588,7 @@ export const tours = [
     order: 8,
   },
   {
-    title: 'Bush & Beach — Mara and Diani',
+    title: 'Bush & Beach: Mara and Diani',
     slug: 'bush-and-beach-mara-and-diani',
     category: 'SafariExpedition',
     summary: 'Four days in the Mara, then four on the Indian Ocean at Diani.',
@@ -629,7 +629,7 @@ export const tours = [
       { day: 8, title: 'Coast and old town', description: 'A morning in Mombasa old town and the spice market, back to the beach for the afternoon.', activities: ['Mombasa old town walk', 'Afternoon at leisure'], meals: ['Breakfast'], accommodation: 'Beach resort, Diani' },
       { day: 9, title: 'Return', description: 'Transfer to the airport for the flight back to Nairobi.', activities: ['Airport transfer'], meals: ['Breakfast'] },
     ],
-    inclusions: [...STANDARD_INCLUSIONS, 'Internal flights Mara–Nairobi–Diani'],
+    inclusions: [...STANDARD_INCLUSIONS, 'Internal flights Mara-Nairobi-Diani'],
     exclusions: STANDARD_EXCLUSIONS,
     featured: false,
     bestSelling: true,
@@ -637,7 +637,7 @@ export const tours = [
     order: 9,
   },
   {
-    title: 'Amboseli & Tsavo — Elephants and Red Earth',
+    title: 'Amboseli & Tsavo: Elephants and Red Earth',
     slug: 'amboseli-and-tsavo-elephants-and-red-earth',
     category: 'SafariExpedition',
     summary: 'Six days in southern Kenya, from the foot of Kilimanjaro into the red dust of Tsavo.',
@@ -671,7 +671,7 @@ export const tours = [
       { day: 1, title: 'Nairobi to Amboseli', description: 'South to Amboseli, arriving for an afternoon drive.', activities: ['Transfer', 'Afternoon game drive'], meals: ['Lunch', 'Dinner'], accommodation: 'Lodge, Amboseli' },
       { day: 2, title: 'Amboseli and the mountain', description: 'Dawn drive for clear Kilimanjaro views, afternoon among the elephant families.', activities: ['Sunrise drive', 'Observation Hill', 'Afternoon drive'], meals: ['Breakfast', 'Lunch', 'Dinner'], accommodation: 'Lodge, Amboseli' },
       { day: 3, title: 'Amboseli to Tsavo West', description: 'East into Tsavo West, stopping at Mzima Springs on the way to camp.', activities: ['Transfer', 'Mzima Springs', 'Afternoon drive'], meals: ['Breakfast', 'Lunch', 'Dinner'], accommodation: 'Lodge, Tsavo West' },
-      { day: 4, title: 'Tsavo West', description: 'A full day in volcanic country — lava flows, the Chaimu crater and the Roaring Rocks viewpoint.', activities: ['Morning drive', 'Chaimu crater walk', 'Afternoon drive'], meals: ['Breakfast', 'Lunch', 'Dinner'], accommodation: 'Lodge, Tsavo West' },
+      { day: 4, title: 'Tsavo West', description: 'A full day in volcanic country: lava flows, the Chaimu crater and the Roaring Rocks viewpoint.', activities: ['Morning drive', 'Chaimu crater walk', 'Afternoon drive'], meals: ['Breakfast', 'Lunch', 'Dinner'], accommodation: 'Lodge, Tsavo West' },
       { day: 5, title: 'Tsavo East', description: 'Across to Tsavo East and the Galana river, with the red elephants and Lugard Falls.', activities: ['Transfer to Tsavo East', 'Lugard Falls', 'River drive'], meals: ['Breakfast', 'Lunch', 'Dinner'], accommodation: 'Lodge, Tsavo East' },
       { day: 6, title: 'Return to Nairobi', description: 'Final morning drive and the road back north, or a transfer on to the coast.', activities: ['Morning game drive', 'Return transfer or coast connection'], meals: ['Breakfast'] },
     ],
@@ -688,7 +688,7 @@ export const tours = [
     category: 'SafariExpedition',
     summary: 'Five days north of the equator, for species found nowhere else in Kenya.',
     description:
-      'The dry north has its own set of animals — Grevy zebra, reticulated giraffe, gerenuk, Beisa oryx and Somali ostrich, collectively the Samburu Special Five. The country is harder and hotter than the Mara, the light is extraordinary, and there are far fewer vehicles.',
+      'The dry north has its own set of animals: Grevy zebra, reticulated giraffe, gerenuk, Beisa oryx and Somali ostrich, collectively the Samburu Special Five. The country is harder and hotter than the Mara, the light is extraordinary, and there are far fewer vehicles.',
     priceFrom: 1300,
     durationDays: 5,
     durationNights: 4,
@@ -728,12 +728,12 @@ export const tours = [
     order: 11,
   },
   {
-    title: 'Serengeti & Ngorongoro — Northern Circuit',
+    title: 'Serengeti & Ngorongoro: Northern Circuit',
     slug: 'serengeti-and-ngorongoro-northern-circuit',
     category: 'SafariExpedition',
     summary: "Seven days across Tanzania's northern parks, ending on the floor of the crater.",
     description:
-      'Tarangire, the Serengeti and the Ngorongoro Crater in one loop out of Arusha. The Serengeti gives you scale and the crater gives you density — an entire ecosystem inside a caldera wall, including some of the last black rhino in the region.',
+      'Tarangire, the Serengeti and the Ngorongoro Crater in one loop out of Arusha. The Serengeti gives you scale and the crater gives you density: an entire ecosystem inside a caldera wall, including some of the last black rhino in the region.',
     priceFrom: 2650,
     durationDays: 7,
     durationNights: 6,
@@ -762,7 +762,7 @@ export const tours = [
       { day: 1, title: 'Arusha to Tarangire', description: 'Into baobab country along the Tarangire river, where the dry season concentrates elephants.', activities: ['Transfer', 'Afternoon game drive'], meals: ['Lunch', 'Dinner'], accommodation: 'Lodge, Tarangire' },
       { day: 2, title: 'Tarangire to the Serengeti', description: 'West across the Ngorongoro highlands and down onto the plains, arriving in the central Serengeti.', activities: ['Highland transfer', 'Arrival game drive'], meals: ['Breakfast', 'Lunch', 'Dinner'], accommodation: 'Tented camp, Serengeti' },
       { day: 3, title: 'Central Serengeti', description: 'A full day around Seronera, the best year-round big cat country in the park.', activities: ['Sunrise drive', 'Picnic lunch', 'Afternoon drive'], meals: ['Breakfast', 'Lunch', 'Dinner'], accommodation: 'Tented camp, Serengeti' },
-      { day: 4, title: 'Serengeti — following the herds', description: 'North or south depending on where the migration is standing, with an optional balloon flight at dawn.', activities: ['Optional balloon safari', 'Full-day drive'], meals: ['Breakfast', 'Lunch', 'Dinner'], accommodation: 'Tented camp, Serengeti' },
+      { day: 4, title: 'Serengeti: following the herds', description: 'North or south depending on where the migration is standing, with an optional balloon flight at dawn.', activities: ['Optional balloon safari', 'Full-day drive'], meals: ['Breakfast', 'Lunch', 'Dinner'], accommodation: 'Tented camp, Serengeti' },
       { day: 5, title: 'Serengeti to Ngorongoro', description: 'East out of the park, stopping at Olduvai Gorge, and up to the crater rim for the night.', activities: ['Olduvai Gorge', 'Crater rim arrival'], meals: ['Breakfast', 'Lunch', 'Dinner'], accommodation: 'Lodge, Ngorongoro rim' },
       { day: 6, title: 'The crater floor', description: 'Down onto the floor at first light for a full day among the densest concentration of large animals in Africa.', activities: ['Crater descent at dawn', 'Full day on the floor', 'Picnic lunch'], meals: ['Breakfast', 'Lunch', 'Dinner'], accommodation: 'Lodge, Ngorongoro rim' },
       { day: 7, title: 'Return to Arusha', description: 'Down the escarpment and back to Arusha or the airport.', activities: ['Return transfer'], meals: ['Breakfast'] },
@@ -775,7 +775,7 @@ export const tours = [
     order: 12,
   },
   {
-    title: 'Calving Season — Southern Serengeti',
+    title: 'Calving Season: Southern Serengeti',
     slug: 'calving-season-southern-serengeti',
     category: 'SafariExpedition',
     summary: 'Six days on the short-grass plains in February, when half a million calves are born.',
@@ -821,12 +821,12 @@ export const tours = [
     order: 13,
   },
   {
-    title: 'Tanzania & Zanzibar — Plains and Spice',
+    title: 'Tanzania & Zanzibar: Plains and Spice',
     slug: 'tanzania-and-zanzibar-plains-and-spice',
     category: 'SafariExpedition',
     summary: 'The northern circuit followed by five nights on the Zanzibar coast.',
     description:
-      'Ten days that pair the Serengeti and the Ngorongoro Crater with Stone Town and the beaches of the north coast. The safari half is properly paced rather than rushed, and the island half is genuinely restful — which is the point of doing them in this order.',
+      'Ten days that pair the Serengeti and the Ngorongoro Crater with Stone Town and the beaches of the north coast. The safari half is properly paced rather than rushed, and the island half is genuinely restful, which is the point of doing them in this order.',
     priceFrom: 3200,
     durationDays: 10,
     durationNights: 9,
@@ -854,7 +854,7 @@ export const tours = [
     itinerary: [
       { day: 1, title: 'Arusha to the Serengeti', description: 'Light aircraft to the central Serengeti and an afternoon drive on arrival.', activities: ['Flight to the Serengeti', 'Afternoon game drive'], meals: ['Lunch', 'Dinner'], accommodation: 'Tented camp, Serengeti' },
       { day: 2, title: 'Central Serengeti', description: 'Full day around Seronera.', activities: ['Sunrise drive', 'Afternoon drive'], meals: ['Breakfast', 'Lunch', 'Dinner'], accommodation: 'Tented camp, Serengeti' },
-      { day: 3, title: 'Serengeti — the wider park', description: 'Following the herds, with an optional balloon flight.', activities: ['Optional balloon safari', 'Full-day drive'], meals: ['Breakfast', 'Lunch', 'Dinner'], accommodation: 'Tented camp, Serengeti' },
+      { day: 3, title: 'Serengeti: the wider park', description: 'Following the herds, with an optional balloon flight.', activities: ['Optional balloon safari', 'Full-day drive'], meals: ['Breakfast', 'Lunch', 'Dinner'], accommodation: 'Tented camp, Serengeti' },
       { day: 4, title: 'Serengeti to Ngorongoro', description: 'East to the crater rim via Olduvai Gorge.', activities: ['Olduvai Gorge', 'Rim arrival'], meals: ['Breakfast', 'Lunch', 'Dinner'], accommodation: 'Lodge, Ngorongoro rim' },
       { day: 5, title: 'The crater floor', description: 'A full day on the floor among the resident game.', activities: ['Crater descent at dawn', 'Full day on the floor'], meals: ['Breakfast', 'Lunch', 'Dinner'], accommodation: 'Lodge, Ngorongoro rim' },
       { day: 6, title: 'Ngorongoro to Zanzibar', description: 'Down to Arusha and the flight to the island, arriving at Stone Town in the afternoon.', activities: ['Flight to Zanzibar', 'Stone Town arrival'], meals: ['Breakfast'], accommodation: 'Hotel, Stone Town' },
@@ -863,7 +863,7 @@ export const tours = [
       { day: 9, title: 'Nungwi at leisure', description: 'Free day. Diving at Mnemba, a sunset dhow cruise, or nothing at all.', activities: ['Beach day', 'Optional diving or dhow cruise'], meals: ['Breakfast'], accommodation: 'Beach resort, Nungwi' },
       { day: 10, title: 'Departure', description: 'Transfer to Zanzibar airport.', activities: ['Airport transfer'], meals: ['Breakfast'] },
     ],
-    inclusions: [...STANDARD_INCLUSIONS, 'Internal flights Arusha–Serengeti and Arusha–Zanzibar'],
+    inclusions: [...STANDARD_INCLUSIONS, 'Internal flights Arusha-Serengeti and Arusha-Zanzibar'],
     exclusions: STANDARD_EXCLUSIONS,
     featured: true,
     bestSelling: false,
@@ -871,7 +871,7 @@ export const tours = [
     order: 14,
   },
   {
-    title: 'Gorilla Trekking — Bwindi Impenetrable Forest',
+    title: 'Gorilla Trekking: Bwindi Impenetrable Forest',
     slug: 'gorilla-trekking-bwindi-impenetrable-forest',
     category: 'SafariExpedition',
     summary: 'Five days in southern Uganda for one hour with a habituated gorilla family.',
@@ -916,7 +916,7 @@ export const tours = [
     order: 15,
   },
   {
-    title: 'Primates of Uganda — Gorillas and Chimpanzees',
+    title: 'Primates of Uganda: Gorillas and Chimpanzees',
     slug: 'primates-of-uganda-gorillas-and-chimpanzees',
     category: 'SafariExpedition',
     summary: 'Eight days tracking both gorillas in Bwindi and chimpanzees in Kibale.',
@@ -964,7 +964,7 @@ export const tours = [
     order: 16,
   },
   {
-    title: 'Rwanda Gorillas — Volcanoes National Park',
+    title: 'Rwanda Gorillas: Volcanoes National Park',
     slug: 'rwanda-gorillas-volcanoes-national-park',
     category: 'SafariExpedition',
     summary: 'Four days from Kigali for a gorilla trek in the Virungas, for travellers short on time.',
@@ -1007,7 +1007,7 @@ export const tours = [
     order: 17,
   },
   {
-    title: 'Zanzibar Escape — Stone Town and the North Coast',
+    title: 'Zanzibar Escape: Stone Town and the North Coast',
     slug: 'zanzibar-escape-stone-town-and-the-north-coast',
     category: 'SafariExpedition',
     summary: 'Seven days on the island: two in Stone Town, five on the beaches of the north.',
@@ -1061,7 +1061,7 @@ export const tours = [
     order: 18,
   },
   {
-    title: 'Nairobi in a Day — Park, Elephants and Giraffes',
+    title: 'Nairobi in a Day: Park, Elephants and Giraffes',
     slug: 'nairobi-in-a-day-park-elephants-and-giraffes',
     category: 'WeekendEscape',
     summary: 'A single day covering the national park, the elephant nursery and the giraffe centre.',
@@ -1146,7 +1146,7 @@ export const tours = [
     itinerary: [
       {
         day: 1,
-        title: 'Saturday — lake and island',
+        title: 'Saturday: lake and island',
         description:
           'Morning departure from Nairobi, a boat safari on the lake after lunch, then walking on Crescent Island among the plains game as the light drops.',
         activities: ['Transfer from Nairobi', 'Boat safari', 'Crescent Island walk'],
@@ -1155,7 +1155,7 @@ export const tours = [
       },
       {
         day: 2,
-        title: "Sunday — Hell's Gate by bicycle",
+        title: "Sunday: Hell's Gate by bicycle",
         description:
           'Cycling into the gorge between the cliffs, a guided walk through the narrows, then lunch and the road back to Nairobi.',
         activities: ["Hell's Gate cycling", 'Gorge walk', 'Return transfer'],
@@ -1170,7 +1170,7 @@ export const tours = [
     order: 20,
   },
   {
-    title: 'Amboseli Weekend — Elephants and the Mountain',
+    title: 'Amboseli Weekend: Elephants and the Mountain',
     slug: 'amboseli-weekend-elephants-and-the-mountain',
     category: 'WeekendEscape',
     summary: 'Three days beneath Kilimanjaro, for the elephants and the clearest mountain views in Kenya.',
@@ -1199,9 +1199,9 @@ export const tours = [
       img('maasai-jumping-dance.jpg', 'Maasai dancers at a community visit'),
     ],
     itinerary: [
-      { day: 1, title: 'Friday — south to Amboseli', description: 'Afternoon departure from Nairobi, arriving for the last of the light and a first drive.', activities: ['Transfer from Nairobi', 'Afternoon game drive'], meals: ['Dinner'], accommodation: 'Lodge, Amboseli' },
-      { day: 2, title: 'Saturday — the mountain and the herds', description: 'Dawn drive for the clearest Kilimanjaro views, the middle of the day at the lodge, and a long afternoon among the elephants.', activities: ['Sunrise drive', 'Observation Hill', 'Afternoon drive', 'Optional Maasai village visit'], meals: ['Breakfast', 'Lunch', 'Dinner'], accommodation: 'Lodge, Amboseli' },
-      { day: 3, title: 'Sunday — final drive and return', description: 'A last morning drive and the road back to Nairobi, arriving late afternoon.', activities: ['Morning game drive', 'Return transfer'], meals: ['Breakfast'] },
+      { day: 1, title: 'Friday: south to Amboseli', description: 'Afternoon departure from Nairobi, arriving for the last of the light and a first drive.', activities: ['Transfer from Nairobi', 'Afternoon game drive'], meals: ['Dinner'], accommodation: 'Lodge, Amboseli' },
+      { day: 2, title: 'Saturday: the mountain and the herds', description: 'Dawn drive for the clearest Kilimanjaro views, the middle of the day at the lodge, and a long afternoon among the elephants.', activities: ['Sunrise drive', 'Observation Hill', 'Afternoon drive', 'Optional Maasai village visit'], meals: ['Breakfast', 'Lunch', 'Dinner'], accommodation: 'Lodge, Amboseli' },
+      { day: 3, title: 'Sunday: final drive and return', description: 'A last morning drive and the road back to Nairobi, arriving late afternoon.', activities: ['Morning game drive', 'Return transfer'], meals: ['Breakfast'] },
     ],
     inclusions: STANDARD_INCLUSIONS,
     exclusions: STANDARD_EXCLUSIONS,

@@ -1,6 +1,6 @@
 /**
  * URL-safe slug from arbitrary title text.
- * Strips diacritics so "Ngorongoro Crater — Day Trip" -> "ngorongoro-crater-day-trip".
+ * Strips diacritics so "Ngorongoro Crater, Day Trip" -> "ngorongoro-crater-day-trip".
  */
 export function slugify(input) {
   return String(input)
@@ -23,7 +23,7 @@ export function slugify(input) {
  * This is still a check-then-write race: two concurrent creates can settle on
  * the same candidate. The `slug` columns carry UNIQUE constraints, so the loser
  * gets a P2002 that the error middleware turns into a 409 rather than a
- * duplicate row — same guarantee the Mongo unique index gave.
+ * duplicate row, same guarantee the Mongo unique index gave.
  */
 export async function uniqueSlug(delegate, source, excludeId = null) {
   const base = slugify(source) || 'item';

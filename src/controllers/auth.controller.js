@@ -23,7 +23,7 @@ function publicShape(admin) {
 export async function login(req, res) {
   const { email, password } = req.body;
 
-  // Unlike the old schema, Postgres has no select:false — the hash comes back
+  // Unlike the old schema, Postgres has no select:false: the hash comes back
   // on every read, so it must never be handed to a serializer. publicShape()
   // is the only thing that reaches the client.
   const admin = await prisma.adminUser.findUnique({
@@ -31,7 +31,7 @@ export async function login(req, res) {
     include: { roleRef: true },
   });
 
-  // Same message for unknown email and wrong password — don't reveal which.
+  // Same message for unknown email and wrong password; don't reveal which.
   if (!admin || !(await bcrypt.compare(password, admin.passwordHash))) {
     throw ApiError.unauthorized('Those credentials do not match our records.');
   }

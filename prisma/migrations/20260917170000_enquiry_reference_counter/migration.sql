@@ -2,7 +2,7 @@
 --
 -- The first implementation read the highest existing reference and added one.
 -- Under concurrent submissions every writer reads the same value, computes the
--- same next one, and all but one hit the unique index — a burst of ten
+-- same next one, and all but one hit the unique index, a burst of ten
 -- simultaneous submissions reliably lost one, which for this form means a lost
 -- customer. Retrying does not fix the shape: each retry re-reads the same
 -- number.

@@ -2,7 +2,7 @@
 # the basis for a deployed image.
 #
 # Multi-stage so the runtime layer does not carry the Prisma CLI (~50MB) or the
-# build toolchain — only the generated client, which lives in node_modules.
+# build toolchain, only the generated client, which lives in node_modules.
 
 FROM node:22-alpine AS deps
 WORKDIR /app
@@ -27,7 +27,7 @@ COPY package.json ./
 COPY src ./src
 
 # Uploads are written at runtime. This is a container-local directory: see the
-# deployment note in the README — on an ephemeral filesystem it is wiped on
+# deployment note in the README, on an ephemeral filesystem it is wiped on
 # every deploy, so mount a volume or move to object storage.
 RUN mkdir -p uploads && chown -R node:node /app
 

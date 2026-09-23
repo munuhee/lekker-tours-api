@@ -36,7 +36,7 @@ function buildWhere(query, { publishedOnly }) {
   }
 
   // Substring rather than full-text search, so partial words match as the user
-  // types — the same reason the Mongo version used a regex over $text.
+  // types, the same reason the Mongo version used a regex over $text.
   if (query.q) {
     where.OR = [
       { title: { contains: query.q, mode: 'insensitive' } },
@@ -168,7 +168,7 @@ export async function deleteTour(id) {
 
 /**
  * Bulk publish/unpublish and delete. The rows are read first so the caller can
- * revalidate each affected slug — updateMany/deleteMany return only a count.
+ * revalidate each affected slug, updateMany/deleteMany return only a count.
  */
 export async function bulkSetTourStatus(ids, status) {
   const existing = await prisma.tour.findMany({

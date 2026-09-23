@@ -7,7 +7,7 @@ import { permissionsFor } from '../middleware/requirePermission.js';
 
 /**
  * The bcrypt hash is a real column and comes back on every Prisma read, so it
- * must never reach the client. This is the only shape these handlers send —
+ * must never reach the client. This is the only shape these handlers send,
  * mirrors publicShape() in auth.controller.js deliberately.
  */
 function publicShape(admin) {
@@ -33,7 +33,7 @@ const ADMIN_SORTS = {
   'email-asc': [{ email: 'asc' }],
 };
 
-/** Cost 12, matching seed/admin.js — changing it here alone would be invisible. */
+/** Cost 12, matching seed/admin.js; changing it here alone would be invisible. */
 const BCRYPT_ROUNDS = 12;
 
 const WITH_ROLE = { include: { roleRef: true } };
@@ -58,8 +58,8 @@ async function loadRoleOrThrow(roleId) {
 
 /**
  * Guard against locking everyone out of the dashboard. Any change that would
- * leave nobody able to manage users — deleting the last such account, or moving
- * it to a role without `users.manage` — produces a site recoverable only by
+ * leave nobody able to manage users, deleting the last such account, or moving
+ * it to a role without `users.manage`, produces a site recoverable only by
  * shell access to the server.
  */
 async function assertNotLastManager(userId, { action }) {

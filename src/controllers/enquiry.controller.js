@@ -50,7 +50,7 @@ export async function submitEnquiry(req, res) {
     console.error('[enquiry] could not log creation of %s:', enquiry.reference, err.message);
   });
 
-  // Echo back only what the sender needs — never the admin fields. The
+  // Echo back only what the sender needs, never the admin fields. The
   // reference is included so a confirmation page can quote it back.
   sendData(
     res,
@@ -94,7 +94,7 @@ function buildEnquiryWhere(query, admin) {
     where.status = where.status ?? { in: OPEN_STATUSES };
   }
 
-  // Sender name, address, message body and reference — what an admin
+  // Sender name, address, message body and reference: what an admin
   // remembers, or reads back off an email, when hunting for one enquiry.
   if (q) {
     where.OR = [
@@ -121,7 +121,7 @@ export async function listEnquiries(req, res) {
       include: ENQUIRY_INCLUDE,
     }),
     prisma.enquiry.count({ where }),
-    // Board counts are for the whole pipeline, not the filtered view — they are
+    // Board counts are for the whole pipeline, not the filtered view; they are
     // the tabs you filter *with*, so narrowing them by the current filter would
     // make every other stage read zero.
     prisma.enquiry.groupBy({ by: ['status'], _count: { _all: true } }),
@@ -147,7 +147,7 @@ export async function listEnquiries(req, res) {
 /**
  * Who an enquiry can be handed to: everyone whose role can work them.
  *
- * Separate from /admin/users because that list needs `users.view` — an account
+ * Separate from /admin/users because that list needs `users.view`, and an account
  * that handles enquiries all day has no business reading the staff directory,
  * but still has to populate an assignee dropdown. Only names are returned.
  */
@@ -190,7 +190,7 @@ export async function getEnquiry(req, res) {
 
   // Opening no longer changes anything. Under the old mailbox model a GET
   // silently marked the enquiry "read", which meant the list could not
-  // distinguish someone glancing at a row from someone working it — the reason
+  // distinguish someone glancing at a row from someone working it: the reason
   // that state is gone. Progress is now recorded only by an explicit action.
   sendData(res, serializeEnquiry(enquiry));
 }
@@ -231,7 +231,7 @@ export async function changeStatus(req, res) {
   const patch = statusSideEffects(status);
 
   // Moving work forward without an owner leaves nobody accountable for it, so
-  // the mover takes it — the same shortcut as picking a card up off a board.
+  // the mover takes it: the same shortcut as picking a card up off a board.
   if (!current.assigneeId && !isClosed(status) && status !== 'new') {
     patch.assigneeId = req.admin.id;
     patch.assignedAt = new Date();
@@ -272,7 +272,7 @@ export async function changeStatus(req, res) {
 /**
  * Assign, reassign, self-claim or unassign.
  *
- * An omitted `assigneeId` means "give it to me" — the self-claim path. The
+ * An omitted `assigneeId` means "give it to me": the self-claim path. The
  * route requires only enquiries.edit, because claiming unowned work and putting
  * your own back are the behaviours the queue exists to encourage. Anything that
  * moves work to or from *another person* additionally needs enquiries.assign,
@@ -412,7 +412,7 @@ export async function recordContact(req, res) {
       enquiryId: current.id,
       type: 'contacted',
       summary: followUpAt
-        ? `${actor.actorName} contacted the customer — following up ${followUpAt.toISOString().slice(0, 10)}`
+        ? `${actor.actorName} contacted the customer, following up ${followUpAt.toISOString().slice(0, 10)}`
         : `${actor.actorName} contacted the customer`,
       note: note ?? null,
       meta: { followUpAt: followUpAt ?? null },
@@ -488,7 +488,7 @@ export async function bulkAssignEnquiries(req, res) {
 
   // "Everything not already assigned to this person." Written as an explicit
   // OR rather than NOT { assigneeId }, because Prisma compiles that to SQL
-  // `assignee_id <> $1`, which is NULL — and therefore not true — for
+  // `assignee_id <> $1`, which is NULL, and therefore not true, for
   // unassigned rows. That would silently skip exactly the rows a bulk assign is
   // usually aimed at.
   const needsChanging =

@@ -2,12 +2,12 @@
  * FAQs, testimonials, blog posts and site settings.
  *
  * Contact details, taglines, the company values and the footer blurb are taken
- * from lekkertours.com. Everything else — FAQ answers, testimonials, blog
- * articles — is written for this site.
+ * from lekkertours.com. Everything else (FAQ answers, testimonials, blog
+ * articles) is written for this site.
  *
  * NOTE ON TESTIMONIALS: these are illustrative examples showing how real
  * reviews will render. They are NOT real customers. Replace them with genuine,
- * attributable reviews before launch — publishing invented testimonials as
+ * attributable reviews before launch, because publishing invented testimonials as
  * real would mislead customers.
  */
 
@@ -17,7 +17,7 @@ export const faqs = [
   {
     question: 'When is the best time to go on safari in East Africa?',
     answer:
-      'The dry seasons — late June to October, and January to February — concentrate wildlife around shrinking water sources and make tracks easier to drive. The Great Migration reaches the Mara River between July and October, while calving on the southern Serengeti peaks in February. That said, the green season from March to May is beautiful, far quieter and noticeably cheaper, and the wildlife does not leave.',
+      'The dry seasons (late June to October, and January to February) concentrate wildlife around shrinking water sources and make tracks easier to drive. The Great Migration reaches the Mara River between July and October, while calving on the southern Serengeti peaks in February. That said, the green season from March to May is beautiful, far quieter and noticeably cheaper, and the wildlife does not leave.',
     group: 'travel',
     order: 1,
     status: 'published',
@@ -25,7 +25,7 @@ export const faqs = [
   {
     question: 'Will I definitely see the Big Five?',
     answer:
-      'On a trip of four days or more across the right parks, most of our guests see four of the five comfortably. Leopard is the one we never promise — they are solitary, nocturnal and genuinely elusive. Rhino requires being in a park that has them, such as Nakuru, Ol Pejeta or the Ngorongoro Crater, which is why we build them into our longer itineraries. Any operator guaranteeing all five is overpromising.',
+      'On a trip of four days or more across the right parks, most of our guests see four of the five comfortably. Leopard is the one we never promise: they are solitary, nocturnal and genuinely elusive. Rhino requires being in a park that has them, such as Nakuru, Ol Pejeta or the Ngorongoro Crater, which is why we build them into our longer itineraries. Any operator guaranteeing all five is overpromising.',
     group: 'travel',
     order: 2,
     status: 'published',
@@ -33,7 +33,7 @@ export const faqs = [
   {
     question: 'How far in advance should I book?',
     answer:
-      'For travel in the July to October high season, three to six months ahead is sensible — the best camps fill early. Gorilla permits in Uganda and Rwanda are strictly limited in number and should be secured six months ahead where possible. For green season travel, six to eight weeks is usually enough.',
+      'For travel in the July to October high season, three to six months ahead is sensible, because the best camps fill early. Gorilla permits in Uganda and Rwanda are strictly limited in number and should be secured six months ahead where possible. For green season travel, six to eight weeks is usually enough.',
     group: 'booking',
     order: 1,
     status: 'published',
@@ -49,7 +49,7 @@ export const faqs = [
   {
     question: 'How do I pay, and what is your cancellation policy?',
     answer:
-      'We take a deposit to confirm your booking and the balance before departure, by bank transfer or card. Deposits are generally refundable up to a defined point before travel, after which charges apply — gorilla permits are the exception, as the parks themselves do not refund them. Exact terms are set out in the booking confirmation we send you before any money changes hands.',
+      'We take a deposit to confirm your booking and the balance before departure, by bank transfer or card. Deposits are generally refundable up to a defined point before travel, after which charges apply. Gorilla permits are the exception, as the parks themselves do not refund them. Exact terms are set out in the booking confirmation we send you before any money changes hands.',
     group: 'payment',
     order: 1,
     status: 'published',
@@ -65,7 +65,7 @@ export const faqs = [
   {
     question: 'Can you tailor an itinerary for us?',
     answer:
-      'Yes — most of what we run is adjusted in some way. Tell us your dates, budget, pace and what matters most to you, and our specialists will build something around it. Honeymoons, families with young children, photographers and travellers with limited mobility all need different things, and a fixed itinerary rarely suits everyone.',
+      'Yes, most of what we run is adjusted in some way. Tell us your dates, budget, pace and what matters most to you, and our specialists will build something around it. Honeymoons, families with young children, photographers and travellers with limited mobility all need different things, and a fixed itinerary rarely suits everyone.',
     group: 'general',
     order: 1,
     status: 'published',
@@ -81,7 +81,7 @@ export const faqs = [
   {
     question: 'Do you arrange single travellers and small groups?',
     answer:
-      'Yes. Most of our departures are private, so the vehicle is yours whether you are one person or six. Single travellers should be aware that accommodation is priced per room, so a single supplement usually applies — we will always show it separately rather than bury it in the total.',
+      'Yes. Most of our departures are private, so the vehicle is yours whether you are one person or six. Single travellers should be aware that accommodation is priced per room, so a single supplement usually applies, and we will always show it separately rather than bury it in the total.',
     group: 'general',
     order: 2,
     status: 'published',
@@ -93,9 +93,9 @@ export const testimonials = [
     authorName: 'Marieke de Vries',
     authorLocation: 'Utrecht, Netherlands',
     quote:
-      'We were met at the airport and from that moment nothing was our problem to solve. Our guide read the Mara like a book — he knew which pride had cubs and where they would be at six in the morning. Three river crossings in four days.',
+      'We were met at the airport and from that moment nothing was our problem to solve. Our guide read the Mara like a book: he knew which pride had cubs and where they would be at six in the morning. Three river crossings in four days.',
     rating: 5,
-    tourName: 'Great Migration — Mara River Crossings',
+    tourName: 'Great Migration: Mara River Crossings',
     featured: true,
     status: 'published',
     order: 1,
@@ -115,9 +115,9 @@ export const testimonials = [
     authorName: 'Sarah & Tom Whitfield',
     authorLocation: 'Bristol, United Kingdom',
     quote:
-      'The bush and beach combination was exactly right for us. A proper safari first, then a week at Diani to actually rest. Booking the internal flights rather than driving made all the difference — we would have lost two days on the road.',
+      'The bush and beach combination was exactly right for us. A proper safari first, then a week at Diani to actually rest. Booking the internal flights rather than driving made all the difference, as we would have lost two days on the road.',
     rating: 5,
-    tourName: 'Bush & Beach — Mara and Diani',
+    tourName: 'Bush & Beach: Mara and Diani',
     featured: true,
     status: 'published',
     order: 3,
@@ -126,9 +126,9 @@ export const testimonials = [
     authorName: 'Priya Raghunathan',
     authorLocation: 'Bengaluru, India',
     quote:
-      'The trek was harder than I expected — four hours up through wet forest — and worth every minute. Our porter carried my camera bag and our ranger was patient with all of us. That hour with the family does not really translate into words.',
+      'The trek was harder than I expected, four hours up through wet forest, and worth every minute. Our porter carried my camera bag and our ranger was patient with all of us. That hour with the family does not really translate into words.',
     rating: 5,
-    tourName: 'Gorilla Trekking — Bwindi Impenetrable Forest',
+    tourName: 'Gorilla Trekking: Bwindi Impenetrable Forest',
     featured: true,
     status: 'published',
     order: 4,
@@ -139,7 +139,7 @@ export const testimonials = [
     quote:
       'I have used several operators over the years for visiting family and clients. Lekker are the ones who answer the phone at ten at night when a flight moves. The logistics are what you are actually paying for and theirs are excellent.',
     rating: 5,
-    tourName: 'Classic Kenya — Mara, Nakuru & Amboseli',
+    tourName: 'Classic Kenya: Mara, Nakuru & Amboseli',
     featured: false,
     status: 'published',
     order: 5,
@@ -167,29 +167,29 @@ export const blogPosts = [
 
 Knowing roughly where they are in a given month is the difference between a good trip and a frustrating one.
 
-## December to March — the southern Serengeti
+## December to March: the southern Serengeti
 
 The herds spread across the short-grass plains around Ndutu. Calving peaks in February, when something like 8,000 calves are born each day. Predator activity is at its most intense of the year: this is when you are most likely to see a hunt, and cheetah in particular do well on open ground.
 
-## April and May — the long rains
+## April and May: the long rains
 
 The herds begin moving north-west through the central Serengeti. Many camps close and the tracks are difficult. It is also the cheapest and emptiest time of year, and the country is green and beautiful. A trade-off worth considering if you are not fixed on river crossings.
 
-## June and July — the western corridor
+## June and July: the western corridor
 
 Movement north along the Grumeti. The first river crossings happen here, with fewer vehicles than the Mara crossings attract later.
 
-## July to October — the Mara River
+## July to October: the Mara River
 
 The period most people mean when they say "the migration". Herds cross the Mara River into Kenya, sometimes in enormous numbers, sometimes turning back at the last moment for no reason anyone can see. Being camped close to the crossing points matters more than anything else, because the waiting is the activity.
 
-## November — moving south
+## November: moving south
 
 The short rains draw the herds back down into the Serengeti, and the loop begins again.
 
 ## A word of caution
 
-No guide can promise you a crossing. The herds gather at the bank, sometimes for hours, and then decide. What a good operator can do is put you in the right place in the right month with someone who reads the build-up — and be honest with you about the rest.`,
+No guide can promise you a crossing. The herds gather at the bank, sometimes for hours, and then decide. What a good operator can do is put you in the right place in the right month with someone who reads the build-up, and be honest with you about the rest.`,
     coverImage: img('mara-wildebeest-migration.jpg', 'Wildebeest herds crossing the Maasai Mara'),
     tags: ['migration', 'kenya', 'tanzania', 'planning'],
     readingMinutes: 5,
@@ -206,11 +206,11 @@ No guide can promise you a crossing. The herds gather at the bank, sometimes for
 
 ## The bag itself
 
-If any part of your trip involves a light aircraft, you need a **soft duffel** — no wheels, no rigid frame. The limit is typically 15kg including hand luggage, and it is enforced. Hard cases do not fit in the hold.
+If any part of your trip involves a light aircraft, you need a **soft duffel**: no wheels, no rigid frame. The limit is typically 15kg including hand luggage, and it is enforced. Hard cases do not fit in the hold.
 
 ## Clothing
 
-Neutral colours: khaki, olive, brown, grey. Not because animals object to bright colours, but because you will be photographed constantly and dust shows less. Avoid blue and black entirely in tsetse fly country — they are genuinely attracted to it.
+Neutral colours: khaki, olive, brown, grey. Not because animals object to bright colours, but because you will be photographed constantly and dust shows less. Avoid blue and black entirely in tsetse fly country, because they are genuinely attracted to it.
 
 Layers matter more than volume. A dawn game drive in an open vehicle at altitude is cold, often single digits. By eleven in the morning it is hot. A fleece and a windproof outer layer make the early starts bearable, and both come off by mid-morning.
 
@@ -238,7 +238,7 @@ We send a complete packing list once your booking is confirmed, tailored to the 
     title: 'Gorilla Trekking: What the Day Actually Looks Like',
     slug: 'gorilla-trekking-what-the-day-actually-looks-like',
     excerpt:
-      'An honest account of a trekking day in Bwindi or the Virungas — the briefing, the walk, the hour, and how hard it really is.',
+      'An honest account of a trekking day in Bwindi or the Virungas: the briefing, the walk, the hour, and how hard it really is.',
     content: `Gorilla trekking is the most affecting wildlife encounter in East Africa and also the most physically demanding thing most of our guests do. It helps to know what the day involves before you commit to it.
 
 ## The briefing
@@ -247,7 +247,7 @@ You arrive at park headquarters by seven in the morning. Rangers divide visitors
 
 ## The walk
 
-This is the part that varies. Trackers have been with your family since dawn and radio their position, but "position" can mean forty minutes away or five hours. The forest is steep, wet and thick — Bwindi is called the Impenetrable Forest for a reason — and there is no path in the usual sense. A ranger cuts through the vegetation ahead of you.
+This is the part that varies. Trackers have been with your family since dawn and radio their position, but "position" can mean forty minutes away or five hours. The forest is steep, wet and thick (Bwindi is called the Impenetrable Forest for a reason) and there is no path in the usual sense. A ranger cuts through the vegetation ahead of you.
 
 **Hire a porter.** They cost very little, they will carry your bag and physically haul you up the steep sections, and the work matters to the communities around the park. Everyone who declines one regrets it by hour two.
 
@@ -255,7 +255,7 @@ This is the part that varies. Trackers have been with your family since dawn and
 
 When you reach the family, the clock starts and you have exactly sixty minutes. It goes faster than you can imagine.
 
-What people rarely mention beforehand is how ordinary the gorillas make it feel. They are not performing. Juveniles wrestle, a mother nurses, the silverback watches you with mild disinterest and goes back to eating. You are, briefly, simply there — and then a ranger says the hour is up.
+What people rarely mention beforehand is how ordinary the gorillas make it feel. They are not performing. Juveniles wrestle, a mother nurses, the silverback watches you with mild disinterest and goes back to eating. You are, briefly, simply there, and then a ranger says the hour is up.
 
 ## Being realistic
 
@@ -278,7 +278,7 @@ Permits are strictly limited and non-refundable once issued. Book six months ahe
 
 ## Samburu National Reserve
 
-North of the equator the country turns dry and rocky, and the species change with it. Grevy zebra, reticulated giraffe, gerenuk, Beisa oryx and Somali ostrich — the "Samburu Special Five" — occur here and essentially nowhere else in Kenya. The Ewaso Ngiro river draws everything to a narrow green strip, which concentrates the game beautifully.
+North of the equator the country turns dry and rocky, and the species change with it. Grevy zebra, reticulated giraffe, gerenuk, Beisa oryx and Somali ostrich, the "Samburu Special Five", occur here and essentially nowhere else in Kenya. The Ewaso Ngiro river draws everything to a narrow green strip, which concentrates the game beautifully.
 
 ## Ol Pejeta Conservancy
 
@@ -290,7 +290,7 @@ Kenya's largest protected area by a wide margin, and startlingly empty of vehicl
 
 ## Lake Nakuru
 
-Compact, fenced and reliable for both black and white rhino. The flamingo numbers fluctuate with water levels and are not what they were in the 1970s, but the setting — a soda lake ringed by yellow-barked acacia and cliffs — is spectacular.
+Compact, fenced and reliable for both black and white rhino. The flamingo numbers fluctuate with water levels and are not what they were in the 1970s, but the setting, a soda lake ringed by yellow-barked acacia and cliffs, is spectacular.
 
 ## Meru National Park
 
@@ -321,7 +321,7 @@ A four-hour game drive is a long time for an adult and an eternity for a seven-y
 
 ## Private vehicles are worth it
 
-Not because of comfort, but because you can turn around when you need to. On a shared vehicle you cannot, and nobody enjoys that — least of all you.
+Not because of comfort, but because you can turn around when you need to. On a shared vehicle you cannot, and nobody enjoys that, least of all you.
 
 ## What children actually respond to
 
@@ -329,7 +329,7 @@ In our experience, rarely the Big Five. It is dung beetles, a giraffe drinking w
 
 ## Practical points
 
-Malaria prophylaxis for children needs a conversation with a travel clinic well in advance. Bring familiar snacks. Pack a torch each — camps are dark at night and children find this either thrilling or alarming, sometimes both within a minute.
+Malaria prophylaxis for children needs a conversation with a travel clinic well in advance. Bring familiar snacks. Pack a torch each, because camps are dark at night and children find this either thrilling or alarming, sometimes both within a minute.
 
 Tell us the ages when you enquire and we will build around them rather than sending you a standard itinerary and hoping.`,
     coverImage: img('amboseli-elephants-walking.jpg', 'Elephant family walking together'),
@@ -341,7 +341,7 @@ Tell us the ages when you enquire and we will build around them rather than send
   },
 ];
 
-/** Values strip on the homepage — taken from lekkertours.com/about-us. */
+/** Values strip on the homepage, taken from lekkertours.com/about-us. */
 export const siteValues = [
   {
     title: 'Local Expertise',

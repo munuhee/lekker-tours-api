@@ -2,7 +2,7 @@
  * The permission vocabulary.
  *
  * Every admin route is gated by one of these strings. They are grouped by
- * resource for the role editor's benefit — the UI renders a section per group
+ * resource for the role editor's benefit: the UI renders a section per group
  * and a checkbox per permission, so adding one here makes it appear there with
  * no further work.
  *
@@ -74,7 +74,7 @@ export const PERMISSION_GROUPS = [
       {
         key: 'settings.edit',
         label: 'Edit settings',
-        hint: 'Contact details, hero, values and SEO — affects every public page.',
+        hint: 'Contact details, hero, values and SEO. Affects every public page.',
       },
     ],
   },

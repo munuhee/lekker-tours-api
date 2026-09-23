@@ -77,7 +77,7 @@ async function seedBlogPosts() {
 }
 
 /**
- * Testimonials have no unique column to upsert on — authorName is not unique in
+ * Testimonials have no unique column to upsert on, authorName is not unique in
  * the schema, since two guests could share a name. Match on it explicitly and
  * fall back to a create.
  */
